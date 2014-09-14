@@ -1,0 +1,4 @@
+services:
+  plugin.manager.embed.type:
+    class: Drupal\embed\EmbedType\EmbedTypeManager
+    arguments: ['@container.namespaces', '@cache.discovery', '@module_handler']
