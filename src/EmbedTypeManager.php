@@ -31,7 +31,7 @@ class EmbedTypeManager extends DefaultPluginManager {
    *   The module handler to invoke the alter hook with.
    */
   public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler) {
-    parent::__construct('Plugin/EmbedType', $namespaces, $module_handler, 'Drupal\embed\Annotation\EmbedType');
+    parent::__construct('Plugin/EmbedType', $namespaces, $module_handler, 'Drupal\embed\EmbedTypeInterface', 'Drupal\embed\Annotation\EmbedType');
     $this->alterInfo('embed_type_plugin_info');
     $this->setCacheBackend($cache_backend, 'embed_type_plugins');
   }
