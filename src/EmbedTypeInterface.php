@@ -59,4 +59,13 @@ interface EmbedTypeInterface {
    */
   public function getEmbedFormClass();
 
+  /**
+   *
+   *
+   * @returns string
+   *   The name of the category that is embed.
+   *
+   */
+  public function getCategory();
+
 }

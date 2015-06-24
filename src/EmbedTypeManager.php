@@ -36,4 +36,23 @@ class EmbedTypeManager extends DefaultPluginManager {
     $this->setCacheBackend($cache_backend, 'embed_type_plugins');
   }
 
+  /**
+   * Determines the Plugins that satisfy a particular category.
+   *
+   * @param string $category
+   *   A string of type category.
+   *
+   * @return array
+   *   An array of plugin definitions.
+   *
+   */
+  public function getDefinitionForCategory($category){
+    $definitions = $this->getDefinitions();
+    for($i = 0; $i < count($definitions); $i++){
+      if($definitions[$i]->category == $category){
+        array_push($definitions[$i]);
+      }
+    }
+    return $definitions_for_category;
+  }
 }

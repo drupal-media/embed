@@ -41,4 +41,11 @@ class EmbedType extends Plugin {
    */
   protected $embed_form_class;
 
+  /**
+   *
+   *
+   * @var string
+   */
+  protected $category;
+
 }
