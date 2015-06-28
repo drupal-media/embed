@@ -44,7 +44,6 @@ class EmbedTypeManager extends DefaultPluginManager {
    *
    * @return array
    *   An array of plugin definitions.
-   *
    */
   public function getDefinitionForCategory($category){
     $definitions = $this->getDefinitions();
