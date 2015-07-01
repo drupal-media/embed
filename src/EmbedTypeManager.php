@@ -47,9 +47,10 @@ class EmbedTypeManager extends DefaultPluginManager {
    */
   public function getDefinitionForCategory($category){
     $definitions = $this->getDefinitions();
-    for($i = 0; $i < count($definitions); $i++){
-      if($definitions[$i]->category == $category){
-        array_push($definitions_for_category,$definitions[$i]);
+    $definitions_for_category = array();
+    foreach($definitions as $definitions){
+      if($definitions->category == $category){
+        array_push($definitions_for_category,$definitions);
       }
     }
     return $definitions_for_category;
