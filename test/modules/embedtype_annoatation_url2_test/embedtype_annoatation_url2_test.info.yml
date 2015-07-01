@@ -1,0 +1,6 @@
+name: 'EmbedType Annotation Url2 test'
+type: module
+description: 'Support module for the Embed module tests.'
+core: 8.x
+package: Testing
+version: VERSION
