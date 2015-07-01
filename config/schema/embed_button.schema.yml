@@ -1,0 +1,27 @@
+embed.settings:
+  type: mapping
+  label: 'Embed settings'
+  mapping:
+    file_scheme:
+      type: string
+      label: 'File scheme for buton images'
+    upload_directory:
+      type: string
+      label: 'Upload directory for buton images'
+
+embed.embed_button.*:
+  type: config_entity
+  label: 'Embed button config'
+  mapping:
+    label:
+      type: label
+      label: 'Name'
+    id:
+      type: string
+      label: 'Machine name'
+    button_label:
+      type: string
+      label: 'Button label'
+    button_icon_uuid:
+      type: string
+      label: 'Button image'
