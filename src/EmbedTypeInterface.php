@@ -36,7 +36,7 @@ interface EmbedTypeInterface {
   public function set($property, $value);
 
   /**
-   * Returns the unique identifier of the embed type.
+   * Return the unique identifier of the embed type.
    *
    * @return string
    *   The unique identifier of the embed type.
@@ -44,7 +44,7 @@ interface EmbedTypeInterface {
   public function id();
 
   /**
-   * Returns the human-readable name of the embed type.
+   * Return the human-readable name of the embed type.
    *
    * @return string
    *   The human-readable name of the embed type.
@@ -52,7 +52,7 @@ interface EmbedTypeInterface {
   public function label();
 
   /**
-   * Returns the name of the embed form class associated with this embed type.
+   * Return the fully qualififed class name of the class which provides the embed form
    *
    * @return string
    *   The name of the embed form class.
