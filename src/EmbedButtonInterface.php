@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\entity_embed\EmbedButtonInterface.
+ * Contains \Drupal\embed\EmbedButtonInterface.
  */
 
 namespace Drupal\embed;

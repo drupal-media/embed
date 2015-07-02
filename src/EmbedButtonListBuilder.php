@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\entity_embed\EmbedButtonListBuilder.
+ * Contains \Drupal\embed\EmbedButtonListBuilder.
  */
 
 namespace Drupal\embed;

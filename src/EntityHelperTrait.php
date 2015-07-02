@@ -13,7 +13,7 @@ use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Entity\EntityStorageException;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\embed\EntityEmbedDisplay\EntityEmbedDisplayManager;
+use Drupal\embed\EmbedDisplay\EneEmbedDisplayManager;
 
 /**
   * Wrapper methods for entity loading and rendering.
@@ -66,12 +66,12 @@ trait EntityHelperTrait{
    }
 
    /**
-     * Renders an entity using an EntityEmbedDisplay plugin.
+     * Renders an entity using an EmbedDisplay plugin.
      *
      * @param \Drupal\Core\Entity\EntityInterface $entity
      *   The entity to be rendered.
      * @param string $plugin_id
-     *   The EntityEmbedDisplay plugin ID.
+     *   The EmbedDisplay plugin ID.
      * @param array $plugin_configuration
      *   (optional) Array of plugin configuration values.
      * @param array $context
@@ -85,7 +85,7 @@ trait EntityHelperTrait{
      *   Throws an exception when the post_render_cache callback goes into a
      *   potentially infinite loop.
      */
-   protected function renderEntityEmbedDisplayPlugin(EntityInterface $entity, $plugin_id, array $plugin_configuration = array(), array $context = array()) {
+   protected function renderEmbedDisplayPlugin(EntityInterface $entity, $plugin_id, array $plugin_configuration = array(), array $context = array()) {
      // Protect ourselves from recursive rendering.
      static $depth = 0;
      $depth++;
@@ -220,12 +220,12 @@ trait EntityHelperTrait{
    /**
      * Returns the display plugin manager.
      *
-     * @return \Drupal\entity_embed\EntityEmbedDisplay\EntityEmbedDisplayManager
+     * @return \Drupal\embed\EmbedDisplay\EmbedDisplayManager
      *   The display plugin manager.
      */
    protected function displayPluginManager() {
      if (!isset($this->displayPluginManager)) {
-       $this->displayPluginManager = \Drupal::service('plugin.manager.entity_embed.display');
+       $this->displayPluginManager = \Drupal::service('plugin.manager.embed.display');
      }
      return $this->displayPluginManager;
    }
@@ -233,12 +233,12 @@ trait EntityHelperTrait{
    /**
      * Sets the display plugin manager service.
      *
-     * @param \Drupal\entity_embed\EntityEmbedDisplay\EntityEmbedDisplayManager $display_plugin_manager
+     * @param \Drupal\embed\EmbedDisplay\EmbedDisplayManager $display_plugin_manager
      *   The display plugin manager service.
      *
      * @return self
      */
-   public function setDisplayPluginManager(EntityEmbedDisplayManager $display_plugin_manager) {
+   public function setDisplayPluginManager(EmbedDisplayManager $display_plugin_manager) {
      $this->displayPluginManager = $display_plugin_manager;
      return $this;
    }
