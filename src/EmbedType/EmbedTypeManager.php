@@ -36,4 +36,16 @@ class EmbedTypeManager extends DefaultPluginManager {
     $this->setCacheBackend($cache_backend, 'embed_type_plugins');
   }
 
+  /**
+   * Provides a list of plugins suitable for form options.
+   *
+   * @return array
+   *   An array of valid plugin labels, keyed by plugin ID.
+   */
+  public function getDefinitionOptions() {
+    return array_map(function ($definition) {
+      return (string) $definition['label'];
+    }, $this->getDefinitions());
+  }
+
 }
