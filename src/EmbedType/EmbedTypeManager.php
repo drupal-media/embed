@@ -5,7 +5,7 @@
  * Contains \Drupal\embed\EmbedTypeManager.
  */
 
-namespace Drupal\embed;
+namespace Drupal\embed\EmbedType;
 
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -15,7 +15,7 @@ use Drupal\Core\Plugin\DefaultPluginManager;
  * Provides an Embed type plugin manager.
  *
  * @see \Drupal\embed\Annotation\EmbedType
- * @see \Drupal\embed\EmbedTypeInterface
+ * @see \Drupal\embed\EmbedType\EmbedTypeInterface
  */
 class EmbedTypeManager extends DefaultPluginManager {
 
