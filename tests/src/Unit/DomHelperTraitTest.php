@@ -54,6 +54,9 @@ class DomHelperTraitTest extends UnitTestCase {
     // Test replacing with an empty value.
     $this->setNodeContent($this->node, '');
     $this->assertEquals(Html::serialize($this->document), '<outer><test foo="bar" namespace:foo="bar"></test></outer>');
+    // Test replacing again with a non-empty value.
+    $this->setNodeContent($this->node, '<div></div>');
+    $this->assertEquals(Html::serialize($this->document), '<outer><test foo="bar" namespace:foo="bar"><div></div></test></outer>');
   }
 
   /**
@@ -65,5 +68,8 @@ class DomHelperTraitTest extends UnitTestCase {
     // Test replacing with an empty value.
     $this->replaceNodeContent($this->node, '');
     $this->assertEquals(Html::serialize($this->document), '<outer></outer>');
+    // Test replacing again with a non-empty value.
+    $this->replaceNodeContent($this->node, '<div></div>');
+    $this->assertEquals(Html::serialize($this->document), '<outer><div></div></outer>');
   }
 }

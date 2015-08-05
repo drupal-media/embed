@@ -93,16 +93,16 @@ trait DomHelperTrait {
         ->item(0)
         ->childNodes
         ->item(0);
-
-      // Import the updated DOMNode from the new DOMDocument into the original
-      // one, importing also the child nodes of the replacement DOMNode.
-      $replacement_node = $node->ownerDocument->importNode($replacement_node, TRUE);
-      $node->parentNode->appendChild($replacement_node);
-      $node->parentNode->removeChild($node);
-      $node = $replacement_node;
     }
     else {
-      $node->parentNode->removeChild($node);
+      $replacement_node = $node->ownerDocument->createTextNode('');
     }
+
+    // Import the updated DOMNode from the new DOMDocument into the original
+    // one, importing also the child nodes of the replacement DOMNode.
+    $replacement_node = $node->ownerDocument->importNode($replacement_node, TRUE);
+    $node->parentNode->appendChild($replacement_node);
+    $node->parentNode->removeChild($node);
+    $node = $replacement_node;
   }
 }
