@@ -1,0 +1,6 @@
+embed.preview:
+  path: '/embed/preview/{filter_format}'
+  defaults:
+    _controller: '\Drupal\embed\Controller\EmbedController::preview'
+  requirements:
+    _entity_access: 'filter_format.use'
