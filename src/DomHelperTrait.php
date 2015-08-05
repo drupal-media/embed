@@ -19,8 +19,16 @@ use Drupal\Component\Utility\Html;
  */
 trait DomHelperTrait {
 
-  protected function changeNodeName(\DOMElement &$node, $name = 'div') {
-    if ($node->tagName != $name) {
+  /**
+   * Rename a DOMNode tag.
+   *
+   * @param \DOMNode $node
+   *   A DOMElement object.
+   * @param string $name
+   *   The new tag name.
+   */
+  protected function changeNodeName(\DOMNode &$node, $name = 'div') {
+    if ($node->nodeName != $name) {
       /** @var \DOMElement $replacement_node */
       $replacement_node = $node->ownerDocument->createElement($name);
 
@@ -47,12 +55,12 @@ trait DomHelperTrait {
   /**
    * Set the contents of a DOMNode.
    *
-   * @param \DOMElement $node
-   *   A DOMElement object.
+   * @param \DOMNode $node
+   *   A DOMNode object.
    * @param string $content
    *   The text or HTML that will replace the contents of $node.
    */
-  protected function setNodeContent(\DOMElement $node, $content) {
+  protected function setNodeContent(\DOMNode $node, $content) {
     // Remove all children of the DOMNode.
     while ($node->hasChildNodes()) {
       $node->removeChild($node->firstChild);
@@ -73,12 +81,12 @@ trait DomHelperTrait {
   /**
    * Replace the contents of a DOMNode.
    *
-   * @param \DOMElement $node
-   *   A DOMElement object.
+   * @param \DOMNode $node
+   *   A DOMNode object.
    * @param string $content
    *   The text or HTML that will replace the contents of $node.
    */
-  protected function replaceNodeContent(\DOMElement &$node, $content) {
+  protected function replaceNodeContent(\DOMNode &$node, $content) {
     if (strlen($content)) {
       // Load the contents into a new DOMDocument and retrieve the element.
       $replacement_node = Html::load($content)->getElementsByTagName('body')
