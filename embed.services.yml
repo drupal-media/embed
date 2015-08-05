@@ -2,3 +2,6 @@ services:
   plugin.manager.embed.type:
     class: Drupal\embed\EmbedType\EmbedTypeManager
     arguments: ['@container.namespaces', '@cache.discovery', '@module_handler']
+  plugin.manager.embed.display:
+    class: Drupal\embed\EmbedDisplay\EmbedDisplayManager
+    arguments: ['@container.namespaces', '@cache.discovery', '@module_handler']
