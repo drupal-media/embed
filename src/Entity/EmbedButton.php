@@ -16,7 +16,7 @@ use Drupal\embed\EmbedButtonInterface;
  *
  * @ConfigEntityType(
  *   id = "embed_button",
- *   label = @Translation("Embed Button"),
+ *   label = @Translation("Embed button"),
  *   handlers = {
  *     "form" = {
  *       "add" = "Drupal\embed\Form\EmbedButtonForm",
@@ -149,7 +149,81 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
       $this->addDependency($file_icon->getConfigDependencyKey(), $file_icon->getConfigDependencyName());
     }
 
+    // Add the embed type plugin as a dependency.
+    if ($definition = $this->embedTypeManager()->getDefinition($this->embed_type, FALSE)) {
+      $this->addDependency('module', $definition['provider']);
+    }
+
     return $this->dependencies;
+  }
+
+  /**
+   * Gets the embed type plugin manager.
+   *
+   * @return \Drupal\embed\EmbedType\EmbedTypeManager
+   */
+  protected function embedTypeManager() {
+    return \Drupal::service('plugin.manager.embed.type');
+  }
+
+  /**
+   * Gets the embed display plugin manager.
+   *
+   * @return \Drupal\embed\EmbedType\EmbedTypeManager
+   */
+  protected function embedDisplayManager() {
+    return \Drupal::service('plugin.manager.embed.display');
+  }
+
+  /**
+   * Gets the file usage service.
+   *
+   * @return \Drupal\file\FileUsage\FileUsageInterface
+   */
+  protected function fileUsage() {
+    return \Drupal::service('file.usage');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function postSave(EntityStorageInterface $storage, $update = TRUE) {
+    parent::postSave($storage, $update);
+
+    $new_button_icon_uuid = $this->get('icon_uuid');
+    if (isset($this->original)) {
+      $old_button_icon_uuid = $this->original->get('icon_uuid');
+      if (!empty($old_button_icon_uuid) && $old_button_icon_uuid != $new_button_icon_uuid) {
+        if ($file = $this->entityManager()->loadEntityByUuid('file', $old_button_icon_uuid)) {
+          $this->fileUsage()->delete($file, 'embed', $this->getEntityTypeId(), $this->id());
+        }
+      }
+    }
+    if ($new_button_icon_uuid) {
+      if ($file = $this->entityManager()->loadEntityByUuid('file', $new_button_icon_uuid)) {
+        $usage = $this->fileUsage()->listUsage($file);
+        if (empty($usage['embed'][$this->getEntityTypeId()][$this->id()])) {
+          $this->fileUsage()->add($file, 'embed', $this->getEntityTypeId(), $this->id());
+        }
+      }
+    }
+  }
+  /**
+   * {@inheritdoc}
+   */
+  public static function postDelete(EntityStorageInterface $storage, array $entities) {
+    parent::postDelete($storage, $entities);
+
+    // Remove file usage for any button icons.
+    foreach ($entities as $entity) {
+      /** @var \Drupal\embed\EmbedButtonInterface $entity */
+      $icon_uuid = $entity->get('icon_uuid');
+      if ($icon_uuid) {
+        if ($file = \Drupal::entityManager()->loadEntityByUuid('file', $icon_uuid)) {
+          \Drupal::service('file.usage')->delete($file, 'entity_embed', $entity->getEntityTypeId(), $entity->id());
+        }
+      }
+    }
   }
 
 }

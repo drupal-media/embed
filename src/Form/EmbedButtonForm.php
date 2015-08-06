@@ -120,7 +120,6 @@ class EmbedButtonForm extends EntityForm {
       '#disabled' => !$embed_button->isNew(),
       '#machine_name' => array(
         'exists' => ['Drupal\embed\Entity\EmbedButton', 'load'],
-        'source' => array('label'),
       ),
       '#description' => t('A unique machine-readable name for this embed button. It must only contain lowercase letters, numbers, and underscores.'),
     );
@@ -131,7 +130,7 @@ class EmbedButtonForm extends EntityForm {
       '#options' => $this->typePluginManager->getDefinitionOptions(),
       '#default_value' => $embed_button->getEmbedType(),
       '#description' => $this->t("Embed type for which this button is to enabled."),
-      //'#required' => TRUE,
+      '#required' => TRUE,
       '#ajax' => array(
         'callback' => '::updateEntityTypeDependentFields',
         'effect' => 'fade',
