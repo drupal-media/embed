@@ -7,6 +7,7 @@
 
 namespace Drupal\embed;
 
+use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
 use Drupal\Core\Entity\EntityInterface;
 
@@ -33,8 +34,8 @@ class EmbedButtonListBuilder extends ConfigEntityListBuilder {
    */
   public function buildRow(EntityInterface $entity) {
     /** @var \Drupal\embed\EmbedButtonInterface $entity */
-    $row['label'] = $this->getLabel($entity);
-    $row['embed_type'] = $entity->getEmbedTypeLabel();
+    $row['label'] = SafeMarkup::checkPlain($entity->label());
+    $row['embed_type'] = SafeMarkup::checkPlain($entity->getEmbedTypeLabel());
     $row['icon'] = \Drupal::theme()->render('image', [
       'uri' => $entity->getIconUrl(),
       'alt' => $this->t('Button icon for the @label button', array('@label' => $this->getLabel($entity)))

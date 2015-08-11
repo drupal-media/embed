@@ -11,7 +11,6 @@ use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityForm;
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -103,6 +102,7 @@ class EmbedButtonForm extends EntityForm {
 
     /** @var \Drupal\embed\EmbedButtonInterface $embed_button */
     $embed_button = $this->entity;
+    $form_state->setTemporaryValue('embed_button', $embed_button);
 
     $form['label'] = array(
       '#title' => t('Label'),
@@ -126,16 +126,26 @@ class EmbedButtonForm extends EntityForm {
 
     $form['embed_type'] = array(
       '#type' => 'select',
-      '#title' => $this->t('Embed type'),
+      '#title' => $this->t('Embed provider'),
       '#options' => $this->typePluginManager->getDefinitionOptions(),
       '#default_value' => $embed_button->getEmbedType(),
       '#description' => $this->t("Embed type for which this button is to enabled."),
       '#required' => TRUE,
       '#ajax' => array(
-        'callback' => '::updateEntityTypeDependentFields',
+        'callback' => '::updateThirdPartySettings',
         'effect' => 'fade',
       ),
-      '#disabled' => !$embed_button->isNew(),
+      //'#disabled' => !$embed_button->isNew(),
+    );
+    if (count($form['embed_type']['#options']) == 0) {
+      drupal_set_message($this->t('No embed types providers found.'), 'warning');
+    }
+
+    $form['third_party_settings'] = array(
+      '#type' => 'container',
+      '#tree' => TRUE,
+      '#prefix' => '<div id="embed-button-third-party-settings-wrapper">',
+      '#suffix' => '</div>',
     );
 
     $file_scheme = $this->entityEmbedConfig->get('file_scheme');
@@ -314,6 +324,29 @@ class EmbedButtonForm extends EntityForm {
 
     return $options;
   }*/
+
+  /**
+   * Ajax callback to update the form fields which depend on entity type.
+   *
+   * @param array $form
+   *   The build form.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The form state.
+   *
+   * @return AjaxResponse
+   *   Ajax response with updated options for entity type bundles.
+   */
+  public function updateThirdPartySettings(array &$form, FormStateInterface $form_state) {
+    $response = new AjaxResponse();
+
+    // Update options for entity type bundles.
+    $response->addCommand(new ReplaceCommand(
+      '#embed-button-third-party-settings-wrapper',
+      $form['third_party_settings']
+    ));
+
+    return $response;
+  }
 
   /**
    * Ajax callback to update the form fields which depend on entity type.
