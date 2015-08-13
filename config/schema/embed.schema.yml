@@ -1,0 +1,35 @@
+# Schema for the configuration files of the Embed module.
+
+embed.settings:
+  type: config_object
+  label: 'Embed settings'
+  mapping:
+    file_scheme:
+      type: string
+      label: 'File scheme for button images'
+    upload_directory:
+      type: string
+      label: 'Upload directory for button images'
+
+embed.button.*:
+  type: config_entity
+  label: 'Embed button'
+  mapping:
+    label:
+      type: label
+      label: 'Name'
+    id:
+      type: string
+      label: 'Machine name'
+    embed_type:
+      type: string
+      label: 'Embed type'
+    icon_uuid:
+      type: string
+      label: 'Button image'
+    display_plugins:
+      type: sequence
+      label: 'Allowed display plugins'
+      sequence:
+        type: string
+        label: 'Display plugin'

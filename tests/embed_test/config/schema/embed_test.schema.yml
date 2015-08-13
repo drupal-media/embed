@@ -1,0 +1,29 @@
+# Schema for the configuration files of the Embed test module.
+
+embed.button.*.third_party.embed_test_a:
+  type: mapping
+  label: 'Schema for embed_test_a additions to an embed button entity'
+  mapping:
+    type:
+      type: string
+      label: 'Type'
+    subtypes:
+      type: sequence
+      label: 'Subtypes'
+      sequence:
+        type: string
+        label: 'Subtype'
+
+embed.button.*.third_party.embed_test_b:
+  type: mapping
+  label: 'Schema for embed_test_a additions to an embed button entity'
+  mapping:
+    type:
+      type: string
+      label: 'Type'
+    subtypes:
+      type: sequence
+      label: 'Subtypes'
+      sequence:
+        type: string
+        label: 'Subtype'

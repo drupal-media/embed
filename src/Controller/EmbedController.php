@@ -8,8 +8,8 @@
 namespace Drupal\embed\Controller;
 
 use Drupal\Core\Ajax\AjaxResponse;
-use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\embed\Ajax\EmbedInsertCommand;
 use Drupal\filter\FilterFormatInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -30,10 +30,10 @@ class EmbedController extends ControllerBase {
    *   The filter format.
    *
    * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-   *   Throws an exception if 'text' parameter is not found in the request.
+   *   Throws an exception if 'value' parameter is not found in the request.
    *
    * @return \Symfony\Component\HttpFoundation\Response
-   *   The preview of the entity specified by the data attributes.
+   *   The preview of the embedded item specified by the data attributes.
    */
   public function preview(Request $request, FilterFormatInterface $filter_format) {
     $text = $request->get('value');
@@ -41,10 +41,9 @@ class EmbedController extends ControllerBase {
       throw new NotFoundHttpException();
     }
 
-    $entity_output = (string) check_markup($text, $filter_format->id());
-
+    $output = check_markup($text, $filter_format->id());
     $response = new AjaxResponse();
-    $response->addCommand(new ReplaceCommand(NULL, $entity_output));
+    $response->addCommand(new EmbedInsertCommand($output));
     return $response;
   }
 

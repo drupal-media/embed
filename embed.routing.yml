@@ -4,3 +4,43 @@ embed.preview:
     _controller: '\Drupal\embed\Controller\EmbedController::preview'
   requirements:
     _entity_access: 'filter_format.use'
+
+embed.settings:
+  path: '/admin/config/content/embed/settings'
+  defaults:
+    _form: '\Drupal\embed\Form\EmbedSettingsForm'
+    _title: 'Settings'
+  requirements:
+    _permission: 'administer embed buttons'
+
+entity.embed_button.collection:
+  path: '/admin/config/content/embed'
+  defaults:
+    _controller: '\Drupal\Core\Entity\Controller\EntityListController::listing'
+    entity_type: 'embed_button'
+    _title: 'Embed buttons'
+  requirements:
+    _permission: 'administer embed buttons'
+
+embed.button_add:
+  path: '/admin/config/content/embed/add'
+  defaults:
+    _entity_form: 'embed_button.add'
+    _title: 'Add embed button'
+  requirements:
+    _permission: 'administer embed butotns'
+
+entity.embed_button.edit_form:
+  path: '/admin/config/content/embed/manage/{embed_button}'
+  defaults:
+    _entity_form: 'embed_button.edit'
+  requirements:
+    _permission: 'administer embed buttons'
+
+entity.embed_button.delete_form:
+  path: '/admin/config/content/embed/manage/{embed_button}/delete'
+  defaults:
+    _entity_form: 'embed_button.delete'
+    _title: 'Delete'
+  requirements:
+    _entity_access: 'embed_button.delete'
