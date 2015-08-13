@@ -14,6 +14,7 @@ use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\ElementInfoManagerInterface;
 use Drupal\ckeditor\CKEditorPluginManager;
 use Drupal\embed\EmbedDisplay\EmbedDisplayManager;
 use Drupal\embed\EmbedType\EmbedTypeManager;
@@ -60,6 +61,13 @@ class EmbedButtonForm extends EntityForm {
   protected $entityEmbedConfig;
 
   /**
+   * The element info manager.
+   *
+   * @var \Drupal\Core\Render\ElementInfoManagerInterface
+   */
+  protected $elementInfo;
+
+  /**
    * Constructs a new EmbedButtonForm.
    *
    * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
@@ -73,12 +81,13 @@ class EmbedButtonForm extends EntityForm {
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The config factory.
    */
-  public function __construct(EntityManagerInterface $entity_manager, EmbedTypeManager $embed_type_manager, EmbedDisplayManager $display_plugin_manager, CKEditorPluginManager $ckeditor_plugin_manager, ConfigFactoryInterface $config_factory) {
+  public function __construct(EntityManagerInterface $entity_manager, EmbedTypeManager $embed_type_manager, EmbedDisplayManager $display_plugin_manager, CKEditorPluginManager $ckeditor_plugin_manager, ConfigFactoryInterface $config_factory, ElementInfoManagerInterface $element_info) {
     $this->entityManager = $entity_manager;
     $this->typePluginManager = $embed_type_manager;
     $this->displayPluginManager = $display_plugin_manager;
     $this->ckeditorPluginManager = $ckeditor_plugin_manager;
     $this->entityEmbedConfig = $config_factory->get('embed.settings');
+    $this->elementInfo = $element_info;
   }
 
   /**
@@ -90,7 +99,8 @@ class EmbedButtonForm extends EntityForm {
       $container->get('plugin.manager.embed.type'),
       $container->get('plugin.manager.embed.display'),
       $container->get('plugin.manager.ckeditor.plugin'),
-      $container->get('config.factory')
+      $container->get('config.factory'),
+      $container->get('element_info')
     );
   }
 
@@ -155,12 +165,22 @@ class EmbedButtonForm extends EntityForm {
     $form['icon_file'] = array(
       '#title' => $this->t('Button icon image'),
       '#type' => 'managed_file',
-      '#description' => $this->t("Image for the button to be shown in CKEditor toolbar. Leave empty to use the default Entity icon."),
+      '#description' => $this->t("Image for the button to be shown in CKEditor toolbar. Leave empty to use the default Entity icon. For best results upload a 32x32 or 16x16 image."),
       '#upload_location' => $upload_location,
       '#upload_validators' => array(
         'file_validate_extensions' => array('gif png jpg jpeg'),
-        'file_validate_image_resolution' => array('32x32', '16x16'),
       ),
+      '#multiple' => FALSE,
+      // Styling for nice image upload.
+      '#process' => array_merge($this->elementInfo->getInfo('managed_file')['#process'], array(array('\Drupal\image\Plugin\Field\FieldWidget\ImageWidget', 'process'))),
+      '#preview_image_style' => 'embed_button',
+      '#title_field' => 0,
+      '#title_field_required' => 0,
+      '#alt_field' => 0,
+      '#alt_field_required' => 0,
+      '#display_field' => 0,
+      '#description_field' => 0,
+      '#cardinality' => 1,
     );
     if ($file = $embed_button->getIconFile()) {
       $form['icon_file']['#default_value'] = array('target_id' => $file->id());
