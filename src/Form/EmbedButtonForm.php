@@ -135,7 +135,7 @@ class EmbedButtonForm extends EntityForm {
         'callback' => '::updateThirdPartySettings',
         'effect' => 'fade',
       ),
-      //'#disabled' => !$embed_button->isNew(),
+      '#disabled' => !$embed_button->isNew(),
     );
     if (count($form['embed_type']['#options']) == 0) {
       drupal_set_message($this->t('No embed types providers found.'), 'warning');

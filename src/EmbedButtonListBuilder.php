@@ -20,6 +20,7 @@ class EmbedButtonListBuilder extends ConfigEntityListBuilder {
    * {@inheritdoc}
    */
   public function buildHeader() {
+    $header = [];
     $header['label'] = $this->t('Embed button');
     $header['embed_type'] = $this->t('Embed type');
     $header['icon'] = [
@@ -34,6 +35,7 @@ class EmbedButtonListBuilder extends ConfigEntityListBuilder {
    */
   public function buildRow(EntityInterface $entity) {
     /** @var \Drupal\embed\EmbedButtonInterface $entity */
+    $row = [];
     $row['label'] = SafeMarkup::checkPlain($entity->label());
     $row['embed_type'] = SafeMarkup::checkPlain($entity->getEmbedTypeLabel());
     $row['icon'] = \Drupal::theme()->render('image', [
