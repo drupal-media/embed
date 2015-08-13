@@ -8,8 +8,8 @@
 namespace Drupal\embed\Controller;
 
 use Drupal\Core\Ajax\AjaxResponse;
-use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\embed\Ajax\EmbedInsertCommand;
 use Drupal\filter\FilterFormatInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -41,10 +41,9 @@ class EmbedController extends ControllerBase {
       throw new NotFoundHttpException();
     }
 
-    $output = (string) check_markup($text, $filter_format->id());
-
+    $output = check_markup($text, $filter_format->id());
     $response = new AjaxResponse();
-    $response->addCommand(new ReplaceCommand(NULL, $output));
+    $response->addCommand(new EmbedInsertCommand($output));
     return $response;
   }
 
