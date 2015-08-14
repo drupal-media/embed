@@ -17,7 +17,7 @@
    * @param settings
    *   The settings argument for Drupal.attachBehaviors()/detachBehaviors().
    */
-  function runEmbedBehaviors(action, context, settings) {
+  Drupal.runEmbedBehaviors = function(action, context, settings) {
     // Do not run the excluded behaviors.
     var stashed = {};
     $.each(Drupal.embed.excludedBehaviors, function (i, behavior) {
@@ -41,7 +41,7 @@
     var $target = ajax.element;
     // No need to detach behaviors here, the widget is created fresh each time.
     $target.html(response.data);
-    runEmbedBehaviors('attach', $target.get(0), response.settings || ajax.settings);
+    Drupal.runEmbedBehaviors('attach', $target.get(0), response.settings || ajax.settings);
   };
 
   /**
