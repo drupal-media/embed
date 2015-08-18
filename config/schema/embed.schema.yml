@@ -23,7 +23,9 @@ embed.button.*:
       label: 'Machine name'
     embed_type:
       type: string
-      label: 'Embed type'
+      label: 'Embed type plugin ID'
+    settings:
+      type: embed.embed_type_settings.[%parent.embed_type]
     icon_uuid:
       type: string
       label: 'Button image'
@@ -32,4 +34,8 @@ embed.button.*:
       label: 'Allowed display plugins'
       sequence:
         type: string
-        label: 'Display plugin'
+        label: 'Display plugin ID'
+
+embed.embed_type_settings.*:
+  type: mapping
+  label: 'Embed type settings'

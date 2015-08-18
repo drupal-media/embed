@@ -40,6 +40,7 @@ use Drupal\embed\EmbedButtonInterface;
  *     "label",
  *     "id",
  *     "embed_type",
+ *     "settings",
  *     "icon_uuid",
  *     "display_plugins",
  *   }
@@ -67,6 +68,15 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
    * @var string
    */
   public $embed_type;
+
+  /**
+   * Embed type settings.
+   *
+   * An array of key/value pairs.
+   *
+   * @var array
+   */
+  public $settings;
 
   /**
    * UUID of the button's icon file.
@@ -101,6 +111,13 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
     else {
       return t('Unknown');
     }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getEmbedTypePlugin() {
+    return $this->embedTypeManager()->createInstance($this->embed_type, $this->getSettings());
   }
 
   /**
@@ -224,6 +241,25 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
         }
       }
     }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getSetting($key, $default = NULL) {
+    if (isset($this->settings[$this->embed_type][$key])) {
+      return $this->settings[$this->embed_type][$key];
+    }
+    else {
+      return $default;
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getSettings() {
+    return isset($this->settings[$this->embed_type]) ? $this->settings[$this->embed_type] : array();
   }
 
 }

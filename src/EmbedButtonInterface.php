@@ -31,6 +31,35 @@ interface EmbedButtonInterface extends ConfigEntityInterface {
   public function getEmbedTypeLabel();
 
   /**
+   * Returns the plugin of the embed type for which this button is enabled.
+   *
+   * @return \Drupal\embed\EmbedType\EmbedTypeInterface
+   *   The plugin of the embed type.
+   */
+  public function getEmbedTypePlugin();
+
+  /**
+   * Gets the value of a embed type setting.
+   *
+   * @param string $key
+   *   The setting name.
+   * @param mixed $default
+   *   The default value
+   *
+   * @return mixed
+   *   The value.
+   */
+  public function getSetting($key, $default = NULL);
+
+  /**
+   * Gets all embed type settings.
+   *
+   * @return array
+   *   An array of key-value pairs.
+   */
+  public function getSettings();
+
+  /**
    * Returns the button's icon file.
    *
    * @return \Drupal\file\FileInterface

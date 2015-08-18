@@ -7,6 +7,7 @@
 
 namespace Drupal\embed\Form;
 
+use Drupal\Component\Plugin\Exception\PluginNotFoundException;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Config\ConfigFactoryInterface;
@@ -132,21 +133,37 @@ class EmbedButtonForm extends EntityForm {
       '#description' => $this->t("Embed type for which this button is to enabled."),
       '#required' => TRUE,
       '#ajax' => array(
-        'callback' => '::updateThirdPartySettings',
+        'callback' => '::updateEmbedTypeSettings',
         'effect' => 'fade',
       ),
       '#disabled' => !$embed_button->isNew(),
     );
     if (count($form['embed_type']['#options']) == 0) {
-      drupal_set_message($this->t('No embed types providers found.'), 'warning');
+      drupal_set_message($this->t('No embed type providers found.'), 'warning');
     }
 
-    $form['third_party_settings'] = array(
+    // Add the embed type plugin settings.
+    $form['settings'] = array(
       '#type' => 'container',
       '#tree' => TRUE,
-      '#prefix' => '<div id="embed-button-third-party-settings-wrapper">',
+      '#prefix' => '<div id="embed-button-settings-wrapper">',
       '#suffix' => '</div>',
     );
+
+    try {
+      if ($type_plugin_id = $embed_button->getEmbedType()) {
+        $type_plugin = $embed_button->getEmbedTypePlugin();
+        $form['settings'][$type_plugin_id] = $type_plugin->buildConfigurationForm(
+          array(),
+          $form_state
+        );
+      }
+    }
+    catch (PluginNotFoundException $exception) {
+      drupal_set_message($exception->getMessage(), 'error');
+      watchdog_exception('embed', $exception);
+      $form['embed_type']['#disabled'] = FALSE;
+    }
 
     $file_scheme = $this->entityEmbedConfig->get('file_scheme');
     $upload_directory = $this->entityEmbedConfig->get('upload_directory');
@@ -237,6 +254,16 @@ class EmbedButtonForm extends EntityForm {
     /** @var \Drupal\embed\EmbedButtonInterface $embed_button */
     $embed_button = $this->entity;
 
+    // Ensure embed type settings are set correctly.
+    // @todo Should this move somewhere else like EmbedButton::preSave()?
+    $type = $embed_button->getEmbedType();
+    if ($settings = $embed_button->getSettings()) {
+      $embed_button->set('settings', array($type => $settings));
+    }
+    else {
+      $embed_button->set('settings', array());
+    }
+
     $icon_fid = $form_state->getValue(array('icon_file', '0'));
     // If a file was uploaded to be used as the icon, get its UUID to be stored
     // in the config entity.
@@ -293,39 +320,6 @@ class EmbedButtonForm extends EntityForm {
   }*/
 
   /**
-   * Builds a list of entity type labels suitable for embed button options.
-   *
-   * Configuration entity types without a view builder are filtered out while
-   * all other entity types are kept.
-   *
-   * @return array
-   *   An array of entity type labels, keyed by entity type name.
-   */
-  /*protected function getFilteredEntityTypes() {
-    $options = array();
-    $definitions = $this->entityManager->getDefinitions();
-
-    foreach ($definitions as $entity_type_id => $definition) {
-      // Don't include configuration entities which do not have a view builder.
-      if ($definition->getGroup() != 'configuration' || $definition->hasViewBuilderClass()) {
-        $options[$definition->getGroupLabel()][$entity_type_id] = $definition->getLabel();
-      }
-    }
-
-    // Group entity type labels.
-    foreach ($options as &$group_options) {
-      // Sort the list alphabetically by group label.
-      array_multisort($group_options, SORT_ASC, SORT_NATURAL);
-    }
-
-    // Make sure that the 'Content' group is situated at the top.
-    $content = $this->t('Content', array(), array('context' => 'Entity type group'));
-    $options = array($content => $options[$content]) + $options;
-
-    return $options;
-  }*/
-
-  /**
    * Ajax callback to update the form fields which depend on entity type.
    *
    * @param array $form
@@ -336,13 +330,13 @@ class EmbedButtonForm extends EntityForm {
    * @return AjaxResponse
    *   Ajax response with updated options for entity type bundles.
    */
-  public function updateThirdPartySettings(array &$form, FormStateInterface $form_state) {
+  public function updateEmbedTypeSettings(array &$form, FormStateInterface $form_state) {
     $response = new AjaxResponse();
 
     // Update options for entity type bundles.
     $response->addCommand(new ReplaceCommand(
-      '#embed-button-third-party-settings-wrapper',
-      $form['third_party_settings']
+      '#embed-button-settings-wrapper',
+      $form['settings']
     ));
 
     return $response;
