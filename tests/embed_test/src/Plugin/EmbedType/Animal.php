@@ -59,4 +59,20 @@ class Animal extends EmbedTypeBase {
     return $form;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {
+    if ($form_state->getValue('animal_type') === 'invertebrates') {
+      $form_state->setError($form['animal_type'], $this->t('Invertebrates are too creepy to be embedded!'));
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
+    parent::submitConfigurationForm($form, $form_state);
+  }
+
 }

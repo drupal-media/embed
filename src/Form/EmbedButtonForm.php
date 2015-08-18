@@ -231,16 +231,32 @@ class EmbedButtonForm extends EntityForm {
   public function validateForm(array &$form, FormStateInterface $form_state) {
     parent::validateForm($form, $form_state);
 
-    $embed_button = $this->entity;
-    if ($embed_button->isNew()) {
+    /** @var \Drupal\embed\EmbedButtonInterface $button */
+    $button = $this->entity;
+
+    if ($button->isNew()) {
       // Get a list of all buttons that are provided by all plugins.
       $all_buttons = array_reduce($this->ckeditorPluginManager->getButtons(), function($result, $item) {
         return array_merge($result, array_keys($item));
       }, array());
       // Ensure that button ID is unique.
-      if (in_array($embed_button->id(), $all_buttons)) {
-        $form_state->setErrorByName('id', $this->t('A CKEditor button with ID %id already exists.', array('%id' => $embed_button->id())));
+      if (in_array($button->id(), $all_buttons)) {
+        $form_state->setErrorByName('id', $this->t('A CKEditor button with ID %id already exists.', array('%id' => $button->id())));
       }
+    }
+
+    // Run embed type plugin validation.
+    if ($button->getTypeId()) {
+      $plugin = $button->getTypePlugin();
+      $plugin_form_state = clone $form_state;
+      $plugin_form_state->setValues($button->getTypeSettings());
+      $plugin->validateConfigurationForm($form['type_settings'], $plugin_form_state);
+      if ($errors = $plugin_form_state->getErrors()) {
+        foreach ($errors as $name => $error) {
+          $form_state->setErrorByName($name, $error);
+        }
+      }
+      $form_state->setValue('settings', $plugin_form_state->getValue('settings'));
     }
   }
 
