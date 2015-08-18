@@ -39,8 +39,8 @@ use Drupal\embed\EmbedButtonInterface;
  *   config_export = {
  *     "label",
  *     "id",
- *     "embed_type",
- *     "settings",
+ *     "type_id",
+ *     "type_settings",
  *     "icon_uuid",
  *     "display_plugins",
  *   }
@@ -63,11 +63,11 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
   public $label;
 
   /**
-   * Selected embed type.
+   * The embed type plugin ID.
    *
    * @var string
    */
-  public $embed_type;
+  public $type_id;
 
   /**
    * Embed type settings.
@@ -76,7 +76,7 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
    *
    * @var array
    */
-  public $settings;
+  public $type_settings = array();
 
   /**
    * UUID of the button's icon file.
@@ -97,15 +97,15 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
   /**
    * {@inheritdoc}
    */
-  public function getEmbedType() {
-    return $this->embed_type;
+  public function getTypeId() {
+    return $this->type_id;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getEmbedTypeLabel() {
-    if ($definition = $this->embedTypeManager()->getDefinition($this->embed_type, FALSE)) {
+  public function getTypeLabel() {
+    if ($definition = $this->typeManager()->getDefinition($this->getTypeId(), FALSE)) {
       return $definition['label'];
     }
     else {
@@ -116,8 +116,8 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
   /**
    * {@inheritdoc}
    */
-  public function getEmbedTypePlugin() {
-    return $this->embedTypeManager()->createInstance($this->embed_type, $this->getSettings());
+  public function getTypePlugin() {
+    return $this->typeManager()->createInstance($this->getTypeId(), $this->getTypeSettings());
   }
 
   /**
@@ -167,7 +167,7 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
     }
 
     // Add the embed type plugin as a dependency.
-    if ($definition = $this->embedTypeManager()->getDefinition($this->embed_type, FALSE)) {
+    if ($definition = $this->typeManager()->getDefinition($this->getTypeId(), FALSE)) {
       $this->addDependency('module', $definition['provider']);
     }
 
@@ -179,7 +179,7 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
    *
    * @return \Drupal\embed\EmbedType\EmbedTypeManager
    */
-  protected function embedTypeManager() {
+  protected function typeManager() {
     return \Drupal::service('plugin.manager.embed.type');
   }
 
@@ -188,7 +188,7 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
    *
    * @return \Drupal\embed\EmbedType\EmbedTypeManager
    */
-  protected function embedDisplayManager() {
+  protected function displayManager() {
     return \Drupal::service('plugin.manager.embed.display');
   }
 
@@ -246,9 +246,9 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
   /**
    * {@inheritdoc}
    */
-  public function getSetting($key, $default = NULL) {
-    if (isset($this->settings[$this->embed_type][$key])) {
-      return $this->settings[$this->embed_type][$key];
+  public function getTypeSetting($key, $default = NULL) {
+    if (isset($this->type_settings[$key])) {
+      return $this->type_settings[$key];
     }
     else {
       return $default;
@@ -258,8 +258,8 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
   /**
    * {@inheritdoc}
    */
-  public function getSettings() {
-    return isset($this->settings[$this->embed_type]) ? $this->settings[$this->embed_type] : array();
+  public function getTypeSettings() {
+    return $this->type_settings;
   }
 
 }

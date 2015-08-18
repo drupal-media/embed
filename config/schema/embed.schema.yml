@@ -21,10 +21,10 @@ embed.button.*:
     id:
       type: string
       label: 'Machine name'
-    embed_type:
+    type_id:
       type: string
       label: 'Embed type plugin ID'
-    settings:
+    type_settings:
       type: embed.embed_type_settings.[%parent.embed_type]
     icon_uuid:
       type: string

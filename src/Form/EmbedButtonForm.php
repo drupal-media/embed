@@ -109,7 +109,7 @@ class EmbedButtonForm extends EntityForm {
       '#title' => t('Label'),
       '#type' => 'textfield',
       '#default_value' => $embed_button->label(),
-      '#description' => t('The human-readable name of this embed button. This text will be displayed as part of the list on the <em>Add content</em> page. This name must be unique.'),
+      '#description' => t('The human-readable name of this embed button. This text will be displayed when the user hovers over the CKEditor button. This name must be unique.'),
       '#required' => TRUE,
       '#size' => 30,
     );
@@ -125,44 +125,41 @@ class EmbedButtonForm extends EntityForm {
       '#description' => t('A unique machine-readable name for this embed button. It must only contain lowercase letters, numbers, and underscores.'),
     );
 
-    $form['embed_type'] = array(
+    $form['type_id'] = array(
       '#type' => 'select',
       '#title' => $this->t('Embed provider'),
       '#options' => $this->typePluginManager->getDefinitionOptions(),
-      '#default_value' => $embed_button->getEmbedType(),
+      '#default_value' => $embed_button->getTypeId(),
       '#description' => $this->t("Embed type for which this button is to enabled."),
       '#required' => TRUE,
       '#ajax' => array(
-        'callback' => '::updateEmbedTypeSettings',
+        'callback' => '::updateTypeSettings',
         'effect' => 'fade',
       ),
       '#disabled' => !$embed_button->isNew(),
     );
-    if (count($form['embed_type']['#options']) == 0) {
+    if (count($form['type_id']['#options']) == 0) {
       drupal_set_message($this->t('No embed type providers found.'), 'warning');
     }
 
     // Add the embed type plugin settings.
-    $form['settings'] = array(
+    $form['type_settings'] = array(
       '#type' => 'container',
       '#tree' => TRUE,
-      '#prefix' => '<div id="embed-button-settings-wrapper">',
+      '#prefix' => '<div id="embed-button-type-settings-wrapper">',
       '#suffix' => '</div>',
     );
 
     try {
-      if ($type_plugin_id = $embed_button->getEmbedType()) {
-        $type_plugin = $embed_button->getEmbedTypePlugin();
-        $form['settings'][$type_plugin_id] = $type_plugin->buildConfigurationForm(
-          array(),
-          $form_state
-        );
+      if ($type_plugin_id = $embed_button->getTypeId()) {
+        $type_plugin = $embed_button->getTypePlugin();
+        $form['type_settings'] = $type_plugin->buildConfigurationForm($form['type_settings'], $form_state);
       }
     }
     catch (PluginNotFoundException $exception) {
       drupal_set_message($exception->getMessage(), 'error');
       watchdog_exception('embed', $exception);
-      $form['embed_type']['#disabled'] = FALSE;
+      $form['type_id']['#disabled'] = FALSE;
     }
 
     $file_scheme = $this->entityEmbedConfig->get('file_scheme');
@@ -254,16 +251,6 @@ class EmbedButtonForm extends EntityForm {
     /** @var \Drupal\embed\EmbedButtonInterface $embed_button */
     $embed_button = $this->entity;
 
-    // Ensure embed type settings are set correctly.
-    // @todo Should this move somewhere else like EmbedButton::preSave()?
-    $type = $embed_button->getEmbedType();
-    if ($settings = $embed_button->getSettings()) {
-      $embed_button->set('settings', array($type => $settings));
-    }
-    else {
-      $embed_button->set('settings', array());
-    }
-
     $icon_fid = $form_state->getValue(array('icon_file', '0'));
     // If a file was uploaded to be used as the icon, get its UUID to be stored
     // in the config entity.
@@ -320,7 +307,7 @@ class EmbedButtonForm extends EntityForm {
   }*/
 
   /**
-   * Ajax callback to update the form fields which depend on entity type.
+   * Ajax callback to update the form fields which depend on embed type.
    *
    * @param array $form
    *   The build form.
@@ -328,45 +315,22 @@ class EmbedButtonForm extends EntityForm {
    *   The form state.
    *
    * @return AjaxResponse
-   *   Ajax response with updated options for entity type bundles.
+   *   Ajax response with updated options for the embed type.
    */
-  public function updateEmbedTypeSettings(array &$form, FormStateInterface $form_state) {
+  public function updateTypeSettings(array &$form, FormStateInterface $form_state) {
     $response = new AjaxResponse();
 
     // Update options for entity type bundles.
     $response->addCommand(new ReplaceCommand(
-      '#embed-button-settings-wrapper',
-      $form['settings']
-    ));
-
-    return $response;
-  }
-
-  /**
-   * Ajax callback to update the form fields which depend on entity type.
-   *
-   * @param array $form
-   *   The build form.
-   * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *   The form state.
-   *
-   * @return AjaxResponse
-   *   Ajax response with updated options for entity type bundles.
-   */
-  public function updateEntityTypeDependentFields(array &$form, FormStateInterface $form_state) {
-    $response = new AjaxResponse();
-
-    // Update options for entity type bundles.
-    $response->addCommand(new ReplaceCommand(
-      '#bundle-embed-type-wrapper',
-      $form['entity_type_bundles']
+      '#embed-button-type-settings-wrapper',
+      $form['type_settings']
     ));
 
     // Update options for display plugins.
-    $response->addCommand(new ReplaceCommand(
-      '#display-plugins-wrapper',
-      $form['display_plugins']
-    ));
+    //$response->addCommand(new ReplaceCommand(
+    //  '#display-plugins-wrapper',
+    //  $form['display_plugins']
+    //));
 
     return $response;
   }

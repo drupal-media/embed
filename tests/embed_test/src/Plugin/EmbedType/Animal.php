@@ -36,7 +36,7 @@ class Animal extends EmbedTypeBase {
       '#default_value' => $this->getConfigurationValue('animal_type'),
       '#required' => TRUE,
       '#ajax' => array(
-        'callback' => array(get_class($form_object), 'updateEmbedTypeSettings'),
+        'callback' => array($form_object, 'updateTypeSettings'),
         'effect' => 'fade',
       ),
     );
@@ -52,7 +52,7 @@ class Animal extends EmbedTypeBase {
           'mammals' => $this->t('Mammals'),
           'reptiles' => $this->t('Reptiles'),
         ),
-        '#default_value' => $this->getConfigurationValue('animal_limit'),
+        '#default_value' => $this->getConfigurationValue('allowed_vertebrates', array()),
       );
     }
 

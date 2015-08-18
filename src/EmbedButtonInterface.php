@@ -20,7 +20,7 @@ interface EmbedButtonInterface extends ConfigEntityInterface {
    * @return string
    *   Machine name of the embed type.
    */
-  public function getEmbedType();
+  public function getTypeId();
 
   /**
    * Returns the label of the embed type for which this button is enabled.
@@ -28,7 +28,7 @@ interface EmbedButtonInterface extends ConfigEntityInterface {
    * @return string
    *   Human readable label of the embed type.
    */
-  public function getEmbedTypeLabel();
+  public function getTypeLabel();
 
   /**
    * Returns the plugin of the embed type for which this button is enabled.
@@ -36,7 +36,7 @@ interface EmbedButtonInterface extends ConfigEntityInterface {
    * @return \Drupal\embed\EmbedType\EmbedTypeInterface
    *   The plugin of the embed type.
    */
-  public function getEmbedTypePlugin();
+  public function getTypePlugin();
 
   /**
    * Gets the value of a embed type setting.
@@ -49,7 +49,7 @@ interface EmbedButtonInterface extends ConfigEntityInterface {
    * @return mixed
    *   The value.
    */
-  public function getSetting($key, $default = NULL);
+  public function getTypeSetting($key, $default = NULL);
 
   /**
    * Gets all embed type settings.
@@ -57,7 +57,7 @@ interface EmbedButtonInterface extends ConfigEntityInterface {
    * @return array
    *   An array of key-value pairs.
    */
-  public function getSettings();
+  public function getTypeSettings();
 
   /**
    * Returns the button's icon file.

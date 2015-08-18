@@ -62,7 +62,7 @@ abstract class EmbedTypeBase extends PluginBase implements EmbedTypeInterface {
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
-    return array();
+    return $form;
   }
 
   /**
