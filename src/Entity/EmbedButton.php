@@ -32,8 +32,8 @@ use Drupal\embed\EmbedButtonInterface;
  *     "label" = "label",
  *   },
  *   links = {
- *     "edit-form" = "/admin/config/content/embed/manage/{embed_button}",
- *     "delete-form" = "/admin/config/content/embed/manage/{embed_button}/delete",
+ *     "edit-form" = "/admin/config/content/embed/button/manage/{embed_button}",
+ *     "delete-form" = "/admin/config/content/embed/button/manage/{embed_button}/delete",
  *     "collection" = "/admin/config/content/embed",
  *   },
  *   config_export = {

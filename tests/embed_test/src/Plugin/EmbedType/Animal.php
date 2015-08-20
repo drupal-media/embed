@@ -14,7 +14,7 @@ use Drupal\embed\EmbedType\EmbedTypeBase;
  * Animal test embed type.
  *
  * @EmbedType(
- *   id = "animal",
+ *   id = "embed_test_animal",
  *   label = @Translation("Animals")
  * )
  */

@@ -127,7 +127,7 @@ class EmbedButtonForm extends EntityForm {
     $form['type_settings'] = array(
       '#type' => 'container',
       '#tree' => TRUE,
-      '#prefix' => '<div id="embed-button-type-settings-wrapper">',
+      '#prefix' => '<div id="embed-type-settings-wrapper">',
       '#suffix' => '</div>',
     );
 
@@ -191,7 +191,7 @@ class EmbedButtonForm extends EntityForm {
           $form_state->setErrorByName($name, $error);
         }
       }
-      $form_state->setValue('settings', $plugin_form_state->getValue('settings'));
+      $form_state->setValue('type_settings', $plugin_form_state->getValues());
     }
   }
 
@@ -207,7 +207,8 @@ class EmbedButtonForm extends EntityForm {
     $plugin_form_state = clone $form_state;
     $plugin_form_state->setValues($button->getTypeSettings());
     $plugin->submitConfigurationForm($form['type_settings'], $plugin_form_state);
-    $form_state->setValue('settings', $plugin->getConfiguration());
+    $form_state->setValue('type_settings', $plugin->getConfiguration());
+    $button->set('type_settings', $plugin->getConfiguration());
 
     $icon_fid = $form_state->getValue(array('icon_file', '0'));
     // If a file was uploaded to be used as the icon, get its UUID to be stored
@@ -251,7 +252,7 @@ class EmbedButtonForm extends EntityForm {
 
     // Update options for entity type bundles.
     $response->addCommand(new ReplaceCommand(
-      '#embed-button-type-settings-wrapper',
+      '#embed-type-settings-wrapper',
       $form['type_settings']
     ));
 

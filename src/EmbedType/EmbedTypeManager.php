@@ -43,9 +43,11 @@ class EmbedTypeManager extends DefaultPluginManager {
    *   An array of valid plugin labels, keyed by plugin ID.
    */
   public function getDefinitionOptions() {
-    return array_map(function ($definition) {
+    $options = array_map(function ($definition) {
       return (string) $definition['label'];
     }, $this->getDefinitions());
+    natsort($options);
+    return $options;
   }
 
 }

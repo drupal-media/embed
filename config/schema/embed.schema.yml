@@ -25,7 +25,7 @@ embed.button.*:
       type: string
       label: 'Embed type plugin ID'
     type_settings:
-      type: embed.embed_type_settings.[%parent.embed_type]
+      type: embed.embed_type_settings.[%parent.type_id]
     icon_uuid:
       type: string
       label: 'Button image'

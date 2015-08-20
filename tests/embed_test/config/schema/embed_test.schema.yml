@@ -1,6 +1,6 @@
 # Schema for the configuration files of the Embed test module.
 
-embed.embed_type_settings.animal:
+embed.embed_type_settings.embed_test_animal:
   type: mapping
   label: 'Schema for the animal embed type additions to an embed button entity'
   mapping:
@@ -14,10 +14,10 @@ embed.embed_type_settings.animal:
         type: string
         label: 'Vertibrate type'
 
-embed.embed_type_settings.embed_test_validation:
+embed.embed_type_settings.embed_test_aircraft:
   type: mapping
   label: 'Schema for the embed_test_validation embed type additions to an embed button entity'
   mapping:
-    type:
+    aircraft_type:
       type: string
       label: 'Airplane type'

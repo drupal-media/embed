@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\embed_test\Plugin\EmbedType\EmbedTestValidation.
+ * Contains \Drupal\embed_test\Plugin\EmbedType\Aircraft.
  */
 
 namespace Drupal\embed_test\Plugin\EmbedType;
@@ -11,14 +11,14 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\embed\EmbedType\EmbedTypeBase;
 
 /**
- * Aircraft test embed type.
+ * An embed type plugin for testing the plugin form. Using aircraft.
  *
  * @EmbedType(
- *   id = "embed_test_validation",
+ *   id = "embed_test_aircraft",
  *   label = @Translation("Aircraft")
  * )
  */
-class EmbedTestValidation extends EmbedTypeBase {
+class Aircraft extends EmbedTypeBase {
 
   /**
    * {@inheritdoc}
@@ -55,7 +55,7 @@ class EmbedTestValidation extends EmbedTypeBase {
    */
   public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {
     if ($form_state->getValue('aircraft_type') === 'invalid') {
-      $form_state->setError($form['aircraft_type'], $this->t('Invalid aircraft type.'));
+      $form_state->setError($form['aircraft_type'], $this->t('Cannot select invalid aircraft type.'));
     }
   }
 
@@ -65,7 +65,7 @@ class EmbedTestValidation extends EmbedTypeBase {
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
     if ($form_state->getValue('aircraft_type') === 'helicopters') {
       drupal_set_message($this->t('Helicopters are just rotorcraft.'), 'warning');
-      $form_state->setValue('aircraft_type', 'rotocraft');
+      $form_state->setValue('aircraft_type', 'rotorcraft');
     }
 
     parent::submitConfigurationForm($form, $form_state);

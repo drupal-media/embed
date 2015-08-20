@@ -23,7 +23,7 @@ abstract class EmbedTypeBase extends PluginBase implements EmbedTypeInterface {
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->setConfiguration($configuration);
+    $this->configuration = NestedArray::mergeDeep($this->defaultConfiguration(), $this->configuration);
   }
 
   /**
@@ -64,11 +64,7 @@ abstract class EmbedTypeBase extends PluginBase implements EmbedTypeInterface {
    * {@inheritdoc}
    */
   public function setConfiguration(array $configuration) {
-    $this->configuration = NestedArray::mergeDeep(
-      $this->defaultConfiguration(),
-      $configuration
-    );
-    return $this;
+    $this->configuration = $configuration;
   }
 
   /**
