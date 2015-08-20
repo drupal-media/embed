@@ -41,7 +41,7 @@ class EmbedButtonEditorAccessCheck implements AccessInterface {
       $embed_button = $parameters->get('embed_button');
       if ($editor instanceof EditorInterface && $embed_button instanceof EmbedButtonInterface) {
         $access = $editor->getFilterFormat()->access('use', $account, TRUE);
-        $access->andIf($embed_button->isEnabledInEditor($editor, TRUE));
+        $access = $access->andIf($embed_button->isEnabledInEditor($editor, TRUE));
         return $access;
       }
     }

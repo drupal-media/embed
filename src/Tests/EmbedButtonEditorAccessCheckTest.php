@@ -7,6 +7,8 @@
 
 namespace Drupal\embed\Tests;
 
+use Drupal\editor\Entity\Editor;
+
 /**
  * Tests the entity_embed dialog controller and route.
  *
@@ -34,6 +36,15 @@ class EmbedButtonEditorAccessCheckTest extends EmbedTestBase {
 
     $this->getRoute('plain_text', 'embed_test_default');
     $this->assertResponse(404);
+
+    // Add an empty configuration for the plain_text editor configuration.
+    $editor = Editor::create([
+      'format' => 'plain_text',
+      'editor' => 'ckeditor',
+    ]);
+    $editor->save();
+    $this->getRoute('plain_text', 'embed_test_default');
+    $this->assertResponse(403);
 
     $this->getRoute('embed_test', 'embed_test_default');
     $this->assertResponse(200);

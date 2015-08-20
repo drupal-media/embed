@@ -247,7 +247,7 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
       }
     }
 
-    return $return_as_object ? AccessResult::forbidden() : FALSE;
+    return $return_as_object ? AccessResult::neutral() : FALSE;
   }
 
 }
