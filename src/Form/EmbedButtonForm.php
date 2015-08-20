@@ -16,7 +16,6 @@ use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\ckeditor\CKEditorPluginManager;
-use Drupal\embed\EmbedDisplay\EmbedDisplayManager;
 use Drupal\embed\EmbedType\EmbedTypeManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -33,7 +32,7 @@ class EmbedButtonForm extends EntityForm {
   protected $entityManager;
 
   /**
-   * The type plugin manager.
+   * The embed type plugin manager.
    *
    * @var \Drupal\embed\EmbedType\EmbedTypeManager
    */
@@ -52,7 +51,7 @@ class EmbedButtonForm extends EntityForm {
    * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
    *   The entity manager service.
    * @param \Drupal\embed\EmbedType\EmbedTypeManager $embed_type_manager
-   *   The embed display plugin manager.
+   *   The embed type plugin manager.
    * @param \Drupal\ckeditor\CKEditorPluginManager $ckeditor_plugin_manager
    *   The CKEditor plugin manager.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory

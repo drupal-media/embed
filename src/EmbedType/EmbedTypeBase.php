@@ -12,7 +12,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\PluginBase;
 
 /**
- * Defines a base display implementation that most display plugins will extend.
+ * Defines a base implementation that most embed type plugins will extend.
  *
  * @ingroup embed_api
  */
