@@ -3,6 +3,7 @@
 namespace Drupal\Tests\embed\Unit;
 
 use Drupal\Component\Utility\Html;
+use Drupal\Component\Serialization\Json;
 use Drupal\Tests\UnitTestCase;
 use Drupal\embed\DomHelperTrait;
 
@@ -71,5 +72,22 @@ class DomHelperTraitTest extends UnitTestCase {
     // Test replacing again with a non-empty value.
     $this->replaceNodeContent($this->node, '<div></div>');
     $this->assertEquals(Html::serialize($this->document), '<outer><div></div></outer>');
+  }
+
+  /**
+   * Test DomHelperTrait::getNodeAttributesAsArray().
+   */
+  public function testGetNodeAttributesAsArray() {
+    $attributes = $this->getNodeAttributesAsArray($this->node);
+    $this->assertArrayEquals(['foo' => 'bar', 'namespace:foo' => 'bar'], $attributes);
+
+    // Test more complex attributes with special characters.
+    $string = "TEST: A <complex> 'encoded' \"JSON\" string";
+    $object = array('nested' => array('array' => true), 'string' => $string);
+    $html = '<test data-json-string=\'' . Json::encode($string) . '\' data-json-object=\'' . Json::encode($object) . '\'></test>';
+    $document = Html::load($html);
+    $node = $document->getElementsByTagName('body')->item(0)->firstChild;
+    $attributes = $this->getNodeAttributesAsArray($node);
+    $this->assertArrayEquals(['data-json-string' => $string, 'data-json-object' => $object], $attributes);
   }
 }
