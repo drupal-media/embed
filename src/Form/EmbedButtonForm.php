@@ -40,13 +40,6 @@ class EmbedButtonForm extends EntityForm {
   protected $typePluginManager;
 
   /**
-   * The display plugin manager.
-   *
-   * @var \Drupal\embed\EmbedDisplay\EmbedDisplayManager
-   */
-  protected $displayPluginManager;
-
-  /**
    * The CKEditor plugin manager.
    *
    * @var \Drupal\ckeditor\CKEditorPluginManager
@@ -54,32 +47,22 @@ class EmbedButtonForm extends EntityForm {
   protected $ckeditorPluginManager;
 
   /**
-   * The embed settings config object.
-   *
-   * @var \Drupal\Core\Config\Config
-   */
-  protected $entityEmbedConfig;
-
-  /**
    * Constructs a new EmbedButtonForm.
    *
    * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
    *   The entity manager service.
    * @param \Drupal\embed\EmbedType\EmbedTypeManager $embed_type_manager
-   *   The embed type plugin manager.
-   * @param \Drupal\embed\EmbedDisplay\EmbedDisplayManager $display_plugin_manager
    *   The embed display plugin manager.
    * @param \Drupal\ckeditor\CKEditorPluginManager $ckeditor_plugin_manager
    *   The CKEditor plugin manager.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The config factory.
    */
-  public function __construct(EntityManagerInterface $entity_manager, EmbedTypeManager $embed_type_manager, EmbedDisplayManager $display_plugin_manager, CKEditorPluginManager $ckeditor_plugin_manager, ConfigFactoryInterface $config_factory) {
+  public function __construct(EntityManagerInterface $entity_manager, EmbedTypeManager $embed_type_manager, CKEditorPluginManager $ckeditor_plugin_manager, ConfigFactoryInterface $config_factory) {
     $this->entityManager = $entity_manager;
     $this->typePluginManager = $embed_type_manager;
-    $this->displayPluginManager = $display_plugin_manager;
     $this->ckeditorPluginManager = $ckeditor_plugin_manager;
-    $this->entityEmbedConfig = $config_factory->get('embed.settings');
+    $this->configFactory = $config_factory;
   }
 
   /**
@@ -89,7 +72,6 @@ class EmbedButtonForm extends EntityForm {
     return new static(
       $container->get('entity.manager'),
       $container->get('plugin.manager.embed.type'),
-      $container->get('plugin.manager.embed.display'),
       $container->get('plugin.manager.ckeditor.plugin'),
       $container->get('config.factory')
     );
@@ -162,9 +144,8 @@ class EmbedButtonForm extends EntityForm {
       $form['type_id']['#disabled'] = FALSE;
     }
 
-    $file_scheme = $this->entityEmbedConfig->get('file_scheme');
-    $upload_directory = $this->entityEmbedConfig->get('upload_directory');
-    $upload_location = $file_scheme . '://' . $upload_directory . '/';
+    $config = $this->config('embed.settings');
+    $upload_location = $config->get('file_scheme') . '://' . $config->get('upload_directory') . '/';
 
     $form['icon_file'] = array(
       '#title' => $this->t('Button icon image'),
@@ -179,48 +160,6 @@ class EmbedButtonForm extends EntityForm {
     if ($file = $embed_button->getIconFile()) {
       $form['icon_file']['#default_value'] = array('target_id' => $file->id());
     }
-
-    /*$form['display_plugins'] = array(
-      '#type' => 'checkboxes',
-      '#default_value' => $embed_button->display_plugins ?: array(),
-      '#prefix' => '<div id="display-plugins-wrapper">',
-      '#suffix' => '</div>',
-    );
-
-    $entity_type_id = $form_state->getValue('entity_type') ?: $embed_button->entity_type;
-    if ($entity_type_id) {
-      $entity_type = $this->entityManager->getDefinition($entity_type_id);
-      // If the entity has bundles, allow option to restrict to bundle(s).
-      if ($entity_type->hasKey('bundle')) {
-        foreach ($this->entityManager->getBundleInfo($entity_type_id) as $bundle_id => $bundle_info) {
-          $bundle_options[$bundle_id] = $bundle_info['label'];
-        }
-
-        // Hide selection if there's just one option, since that's going to be
-        // allowed in either case.
-        if (count($bundle_options) > 1) {
-          $form['entity_type_bundles'] += array(
-            '#title' => $entity_type->getBundleLabel() ?: $this->t('Bundles'),
-            '#options' => $bundle_options,
-            '#description' => $this->t('If none are selected, all are allowed.'),
-          );
-        }
-      }
-
-      // Allow option to limit display plugins.
-      $form['display_plugins'] += array(
-        '#title' => $this->t('Allowed display plugins'),
-        '#options' => $this->displayPluginManager->getDefinitionOptionsForEntityType($entity_type_id),
-        '#description' => $this->t('If none are selected, all are allowed. Note that these are the plugins which are allowed for this entity type, all of these might not be available for the selected entity.'),
-      );
-    }
-    // Set options to an empty array if it hasn't been set so far.
-    if (!isset($form['entity_type_bundles']['#options'])) {
-      $form['entity_type_bundles']['#options'] = array();
-    }
-    if (!isset($form['display_plugins']['#options'])) {
-      $form['display_plugins']['#options'] = array();
-    }*/
 
     return $form;
   }
@@ -301,35 +240,6 @@ class EmbedButtonForm extends EntityForm {
   }
 
   /**
-   * {@inheritdoc}
-   */
-  /*protected function copyFormValuesToEntity(\Drupal\embed\EmbedButtonInterface $entity, array $form, FormStateInterface $form_state) {
-    $values = $form_state->getValues();
-
-    $icon_fid = $form_state->getValue(array('icon_file', '0'));
-    // If a file was uploaded to be used as the icon, get its UUID to be stored
-    // in the config entity.
-    if (!empty($icon_fid) && $file = $this->entityManager->getStorage('file')->load($icon_fid)) {
-      $icon_uuid = $file->uuid();
-    }
-    else {
-      $icon_uuid = NULL;
-    }
-
-    // Set all form values in the entity except the button icon since it is a
-    // managed file element in the form but we want its UUID instead, which
-    // will be separately set later.
-    foreach ($values as $key => $value) {
-      if ($key != 'icon_file') {
-        $entity->set($key, $value);
-      }
-    }
-
-    // Set the UUID of the button icon.
-    $entity->set('icon_uuid', $icon_uuid);
-  }*/
-
-  /**
    * Ajax callback to update the form fields which depend on embed type.
    *
    * @param array $form
@@ -348,12 +258,6 @@ class EmbedButtonForm extends EntityForm {
       '#embed-button-type-settings-wrapper',
       $form['type_settings']
     ));
-
-    // Update options for display plugins.
-    //$response->addCommand(new ReplaceCommand(
-    //  '#display-plugins-wrapper',
-    //  $form['display_plugins']
-    //));
 
     return $response;
   }
