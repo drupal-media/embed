@@ -14,9 +14,9 @@ embed.embed_type_settings.animal:
         type: string
         label: 'Vertibrate type'
 
-embed.embed_type_settings.airplanes:
+embed.embed_type_settings.embed_test_validation:
   type: mapping
-  label: 'Schema for the airplane embed type additions to an embed button entity'
+  label: 'Schema for the embed_test_validation embed type additions to an embed button entity'
   mapping:
     type:
       type: string

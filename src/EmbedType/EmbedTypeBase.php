@@ -50,12 +50,32 @@ abstract class EmbedTypeBase extends PluginBase implements EmbedTypeInterface {
   /**
    * {@inheritdoc}
    */
+  public function getConfigurationValue($name, $default = NULL) {
+    $configuration = $this->getConfiguration();
+    if (array_key_exists($name, $configuration)) {
+      return $configuration[$name];
+    }
+    else {
+      return $default;
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function setConfiguration(array $configuration) {
     $this->configuration = NestedArray::mergeDeep(
       $this->defaultConfiguration(),
       $configuration
     );
     return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setConfigurationValue($name, $value) {
+    $this->configuration[$name] = $value;
   }
 
   /**
@@ -76,25 +96,14 @@ abstract class EmbedTypeBase extends PluginBase implements EmbedTypeInterface {
    * {@inheritdoc}
    */
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
-    if (!$form_state->getErrors()) {
-      $this->configuration = array_intersect_key($form_state->getValues(), $this->defaultConfiguration());
+    if (!$form_state->hasAnyErrors()) {
+      $this->setConfiguration(
+        array_intersect_key(
+          $form_state->getValues(),
+          $this->defaultConfiguration()
+        )
+      );
     }
   }
 
-  /**
-   * Gets a configuration value.
-   *
-   * @param string $name
-   *   The name of the plugin configuration value.
-   * @param mixed $default
-   *   The default value to return if the configuration value does not exist.
-   *
-   * @return mixed
-   *   The currently set configuration value, or the value of $default if the
-   *   configuration value is not set.
-   */
-  public function getConfigurationValue($name, $default = NULL) {
-    $configuration = $this->getConfiguration();
-    return array_key_exists($name, $configuration) ? $configuration[$name] : $default;
-  }
 }

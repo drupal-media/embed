@@ -18,4 +18,28 @@ use Drupal\Core\Plugin\PluginFormInterface;
  */
 interface EmbedTypeInterface extends ConfigurablePluginInterface, PluginFormInterface, PluginInspectionInterface {
 
+  /**
+   * Gets a configuration value.
+   *
+   * @param string $name
+   *   The name of the plugin configuration value.
+   * @param mixed $default
+   *   The default value to return if the configuration value does not exist.
+   *
+   * @return mixed
+   *   The currently set configuration value, or the value of $default if the
+   *   configuration value is not set.
+   */
+  public function getConfigurationValue($name, $default = NULL);
+
+  /**
+   * Sets a configuration value.
+   *
+   * @param string $name
+   *   The name of the plugin configuration value.
+   * @param mixed $value
+   *   The value to set.
+   */
+  public function setConfigurationValue($name, $value);
+
 }

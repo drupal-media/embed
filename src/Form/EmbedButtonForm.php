@@ -264,33 +264,40 @@ class EmbedButtonForm extends EntityForm {
    * {@inheritdoc}
    */
   public function save(array $form, FormStateInterface $form_state) {
-    /** @var \Drupal\embed\EmbedButtonInterface $embed_button */
-    $embed_button = $this->entity;
+    /** @var \Drupal\embed\EmbedButtonInterface $button */
+    $button = $this->entity;
+
+    // Run embed type plugin submission.
+    $plugin = $button->getTypePlugin();
+    $plugin_form_state = clone $form_state;
+    $plugin_form_state->setValues($button->getTypeSettings());
+    $plugin->submitConfigurationForm($form['type_settings'], $plugin_form_state);
+    $form_state->setValue('settings', $plugin->getConfiguration());
 
     $icon_fid = $form_state->getValue(array('icon_file', '0'));
     // If a file was uploaded to be used as the icon, get its UUID to be stored
     // in the config entity.
     if (!empty($icon_fid) && $file = $this->entityManager->getStorage('file')->load($icon_fid)) {
-      $embed_button->set('icon_uuid', $file->uuid());
+      $button->set('icon_uuid', $file->uuid());
     }
     else {
-      $embed_button->set('icon_uuid', NULL);
+      $button->set('icon_uuid', NULL);
     }
 
-    $status = $embed_button->save();
+    $status = $button->save();
 
-    $t_args = array('%label' => $embed_button->label());
+    $t_args = array('%label' => $button->label());
 
     if ($status == SAVED_UPDATED) {
       drupal_set_message(t('The embed button %label has been updated.', $t_args));
     }
     elseif ($status == SAVED_NEW) {
       drupal_set_message(t('The embed button %label has been added.', $t_args));
-      $context = array_merge($t_args, array('link' => $embed_button->link($this->t('View'), 'collection')));
+      $context = array_merge($t_args, array('link' => $button->link($this->t('View'), 'collection')));
       $this->logger('embed')->notice('Added embed button %label.', $context);
     }
 
-    $form_state->setRedirectUrl($embed_button->urlInfo('collection'));
+    $form_state->setRedirectUrl($button->urlInfo('collection'));
   }
 
   /**
