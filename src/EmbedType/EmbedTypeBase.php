@@ -102,4 +102,11 @@ abstract class EmbedTypeBase extends PluginBase implements EmbedTypeInterface {
     }
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getDefaultIconUrl() {
+    // Return nothing.
+  }
+
 }

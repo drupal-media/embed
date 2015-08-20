@@ -129,7 +129,7 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
       return $image->url();
     }
     else {
-      return file_create_url(drupal_get_path('module', 'embed') . '/js/plugins/drupalembed/embed.png');
+      return $this->getTypePlugin()->getDefaultIconUrl();
     }
   }
 

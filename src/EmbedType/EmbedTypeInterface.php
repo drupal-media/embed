@@ -42,4 +42,12 @@ interface EmbedTypeInterface extends ConfigurablePluginInterface, PluginFormInte
    */
   public function setConfigurationValue($name, $value);
 
+  /**
+   * Gets the default icon URL for the embed type.
+   *
+   * @return string
+   *   The URL to the default icon. Use file_create_url() if needed.
+   */
+  public function getDefaultIconUrl();
+
 }

@@ -38,10 +38,22 @@ class EmbedButtonListBuilder extends ConfigEntityListBuilder {
     $row = [];
     $row['label'] = SafeMarkup::checkPlain($entity->label());
     $row['embed_type'] = SafeMarkup::checkPlain($entity->getTypeLabel());
-    $row['icon'] = \Drupal::theme()->render('image', [
-      'uri' => $entity->getIconUrl(),
-      'alt' => $this->t('Button icon for the @label button', array('@label' => $this->getLabel($entity)))
-    ]);
+    if ($icon_url = $entity->getIconUrl()) {
+      $row['icon'] = \Drupal::theme()->render(
+        'image',
+        [
+          'uri' => $icon_url,
+          'alt' => $this->t(
+            'Button icon for the @label button',
+            array('@label' => $entity->label())
+          )
+        ]
+      );
+    }
+    else {
+      $row['icon'] = $this->t('None');
+    }
+
     return $row + parent::buildRow($entity);
   }
 
