@@ -8,7 +8,7 @@
 
 language: php
 sudo: false
-    
+
 cache:
   directories:
     - $HOME/.composer/cache
@@ -86,13 +86,14 @@ env:
     #- DRUPAL_TI_DEBUG_FILE_OUTPUT="selenium xvfb webserver"
 
   matrix:
+    - DRUPAL_TI_RUNNERS="phpunit-core simpletest"
     # [[[ SELECT ANY OR MORE OPTIONS ]]]
     #- DRUPAL_TI_RUNNERS="phpunit"
     #- DRUPAL_TI_RUNNERS="simpletest"
     #- DRUPAL_TI_RUNNERS="behat"
     #- DRUPAL_TI_RUNNERS="phpunit simpletest behat"
     # Use phpunit-core to test modules with phpunit with Drupal 8 core.
-    - DRUPAL_TI_RUNNERS="phpunit-core"
+    #- DRUPAL_TI_RUNNERS="phpunit-core"
 
 mysql:
   database: drupal_travis_db
