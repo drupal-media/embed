@@ -36,7 +36,7 @@ class EmbedButtonForm extends EntityForm {
    *
    * @var \Drupal\embed\EmbedType\EmbedTypeManager
    */
-  protected $typePluginManager;
+  protected $embedTypeManager;
 
   /**
    * The CKEditor plugin manager.
@@ -59,7 +59,7 @@ class EmbedButtonForm extends EntityForm {
    */
   public function __construct(EntityManagerInterface $entity_manager, EmbedTypeManager $embed_type_manager, CKEditorPluginManager $ckeditor_plugin_manager, ConfigFactoryInterface $config_factory) {
     $this->entityManager = $entity_manager;
-    $this->typePluginManager = $embed_type_manager;
+    $this->embedTypeManager = $embed_type_manager;
     $this->ckeditorPluginManager = $ckeditor_plugin_manager;
     $this->configFactory = $config_factory;
   }
@@ -109,7 +109,7 @@ class EmbedButtonForm extends EntityForm {
     $form['type_id'] = array(
       '#type' => 'select',
       '#title' => $this->t('Embed provider'),
-      '#options' => $this->typePluginManager->getDefinitionOptions(),
+      '#options' => $this->embedTypeManager->getDefinitionOptions(),
       '#default_value' => $embed_button->getTypeId(),
       '#description' => $this->t("Embed type for which this button is to enabled."),
       '#required' => TRUE,

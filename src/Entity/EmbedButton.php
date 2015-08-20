@@ -95,7 +95,7 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
    * {@inheritdoc}
    */
   public function getTypeLabel() {
-    if ($definition = $this->typeManager()->getDefinition($this->getTypeId(), FALSE)) {
+    if ($definition = $this->embedTypeManager()->getDefinition($this->getTypeId(), FALSE)) {
       return $definition['label'];
     }
     else {
@@ -107,7 +107,7 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
    * {@inheritdoc}
    */
   public function getTypePlugin() {
-    return $this->typeManager()->createInstance($this->getTypeId(), $this->getTypeSettings());
+    return $this->embedTypeManager()->createInstance($this->getTypeId(), $this->getTypeSettings());
   }
 
   /**
@@ -143,7 +143,7 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
     }
 
     // Add the embed type plugin as a dependency.
-    if ($definition = $this->typeManager()->getDefinition($this->getTypeId(), FALSE)) {
+    if ($definition = $this->embedTypeManager()->getDefinition($this->getTypeId(), FALSE)) {
       $this->addDependency('module', $definition['provider']);
     }
 
@@ -155,7 +155,7 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
    *
    * @return \Drupal\embed\EmbedType\EmbedTypeManager
    */
-  protected function typeManager() {
+  protected function embedTypeManager() {
     return \Drupal::service('plugin.manager.embed.type');
   }
 
