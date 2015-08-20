@@ -32,7 +32,7 @@ class EmbedTypeManager extends DefaultPluginManager {
    */
   public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler) {
     parent::__construct('Plugin/EmbedType', $namespaces, $module_handler, 'Drupal\embed\EmbedType\EmbedTypeInterface', 'Drupal\embed\Annotation\EmbedType');
-    $this->alterInfo('embed_type_plugin_info');
+    $this->alterInfo('embed_type_plugins');
     $this->setCacheBackend($cache_backend, 'embed_type_plugins');
   }
 
