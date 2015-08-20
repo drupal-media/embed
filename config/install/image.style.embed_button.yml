@@ -1,0 +1,14 @@
+name: embed_button
+label: 'Embed Button (32x32)'
+effects:
+  0cea8388-fe1f-4202-af26-385bad55e186:
+    id: image_scale_and_crop
+    data:
+      width: 32
+      height: 32
+    weight: 0
+    uuid: 0cea8388-fe1f-4202-af26-385bad55e186
+langcode: en
+dependencies:
+  module:
+    - image
