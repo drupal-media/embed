@@ -107,7 +107,9 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
    * {@inheritdoc}
    */
   public function getTypePlugin() {
-    return $this->embedTypeManager()->createInstance($this->getTypeId(), $this->getTypeSettings());
+    if ($plugin_id = $this->getTypeId()) {
+      return $this->embedTypeManager()->createInstance($plugin_id, $this->getTypeSettings());
+    }
   }
 
   /**

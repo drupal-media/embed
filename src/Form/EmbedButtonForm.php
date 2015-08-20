@@ -82,14 +82,14 @@ class EmbedButtonForm extends EntityForm {
   public function form(array $form, FormStateInterface $form_state) {
     $form = parent::form($form, $form_state);
 
-    /** @var \Drupal\embed\EmbedButtonInterface $embed_button */
-    $embed_button = $this->entity;
-    $form_state->setTemporaryValue('embed_button', $embed_button);
+    /** @var \Drupal\embed\EmbedButtonInterface $button */
+    $button = $this->entity;
+    $form_state->setTemporaryValue('embed_button', $button);
 
     $form['label'] = array(
       '#title' => t('Label'),
       '#type' => 'textfield',
-      '#default_value' => $embed_button->label(),
+      '#default_value' => $button->label(),
       '#description' => t('The human-readable name of this embed button. This text will be displayed when the user hovers over the CKEditor button. This name must be unique.'),
       '#required' => TRUE,
       '#size' => 30,
@@ -97,9 +97,9 @@ class EmbedButtonForm extends EntityForm {
 
     $form['id'] = array(
       '#type' => 'machine_name',
-      '#default_value' => $embed_button->id(),
+      '#default_value' => $button->id(),
       '#maxlength' => EntityTypeInterface::BUNDLE_MAX_LENGTH,
-      '#disabled' => !$embed_button->isNew(),
+      '#disabled' => !$button->isNew(),
       '#machine_name' => array(
         'exists' => ['Drupal\embed\Entity\EmbedButton', 'load'],
       ),
@@ -110,14 +110,14 @@ class EmbedButtonForm extends EntityForm {
       '#type' => 'select',
       '#title' => $this->t('Embed provider'),
       '#options' => $this->embedTypeManager->getDefinitionOptions(),
-      '#default_value' => $embed_button->getTypeId(),
+      '#default_value' => $button->getTypeId(),
       '#description' => $this->t("Embed type for which this button is to enabled."),
       '#required' => TRUE,
       '#ajax' => array(
         'callback' => '::updateTypeSettings',
         'effect' => 'fade',
       ),
-      '#disabled' => !$embed_button->isNew(),
+      '#disabled' => !$button->isNew(),
     );
     if (count($form['type_id']['#options']) == 0) {
       drupal_set_message($this->t('No embed type providers found.'), 'warning');
@@ -132,9 +132,8 @@ class EmbedButtonForm extends EntityForm {
     );
 
     try {
-      if ($type_plugin_id = $embed_button->getTypeId()) {
-        $type_plugin = $embed_button->getTypePlugin();
-        $form['type_settings'] = $type_plugin->buildConfigurationForm($form['type_settings'], $form_state);
+      if ($plugin = $button->getTypePlugin()) {
+        $form['type_settings'] = $plugin->buildConfigurationForm($form['type_settings'], $form_state);
       }
     }
     catch (PluginNotFoundException $exception) {
@@ -145,7 +144,6 @@ class EmbedButtonForm extends EntityForm {
 
     $config = $this->config('embed.settings');
     $upload_location = $config->get('file_scheme') . '://' . $config->get('upload_directory') . '/';
-
     $form['icon_file'] = array(
       '#title' => $this->t('Button icon image'),
       '#type' => 'managed_file',
@@ -156,7 +154,7 @@ class EmbedButtonForm extends EntityForm {
         'file_validate_image_resolution' => array('32x32', '16x16'),
       ),
     );
-    if ($file = $embed_button->getIconFile()) {
+    if ($file = $button->getIconFile()) {
       $form['icon_file']['#default_value'] = array('target_id' => $file->id());
     }
 
@@ -184,8 +182,7 @@ class EmbedButtonForm extends EntityForm {
     }
 
     // Run embed type plugin validation.
-    if ($button->getTypeId()) {
-      $plugin = $button->getTypePlugin();
+    if ($plugin = $button->getTypePlugin()) {
       $plugin_form_state = clone $form_state;
       $plugin_form_state->setValues($button->getTypeSettings());
       $plugin->validateConfigurationForm($form['type_settings'], $plugin_form_state);
