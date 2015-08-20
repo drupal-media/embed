@@ -9,7 +9,9 @@ namespace Drupal\embed\Controller;
 
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\editor\EditorInterface;
 use Drupal\embed\Ajax\EmbedInsertCommand;
+use Drupal\embed\EmbedButtonInterface;
 use Drupal\filter\FilterFormatInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -20,7 +22,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class EmbedController extends ControllerBase {
 
   /**
-   * Returns an Ajax response to generate preview of an entity.
+   * Returns an Ajax response to generate preview of embedded items.
    *
    * Expects the the HTML element as GET parameter.
    *
@@ -45,6 +47,28 @@ class EmbedController extends ControllerBase {
     $response = new AjaxResponse();
     $response->addCommand(new EmbedInsertCommand($output));
     return $response;
+  }
+
+  /**
+   * Returns an Ajax response to generate preview of an entity.
+   *
+   * Expects the the HTML element as GET parameter.
+   *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The request object.
+   * @param \Drupal\editor\EditorInterface $editor
+   *   The editor.
+   * @param \Drupal\embed\EmbedButtonInterface $embed_button
+   *   The embed button.
+   *
+   * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+   *   Throws an exception if 'value' parameter is not found in the request.
+   *
+   * @return \Symfony\Component\HttpFoundation\Response
+   *   The preview of the embedded item specified by the data attributes.
+   */
+  public function previewEditor(Request $request, EditorInterface $editor, EmbedButtonInterface $embed_button) {
+    return $this->preview($request, $editor->getFilterFormat());
   }
 
 }

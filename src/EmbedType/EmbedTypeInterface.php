@@ -7,56 +7,47 @@
 
 namespace Drupal\embed\EmbedType;
 
+use Drupal\Component\Plugin\PluginInspectionInterface;
+use Drupal\Component\Plugin\ConfigurablePluginInterface;
+use Drupal\Core\Plugin\PluginFormInterface;
+
 /**
  * Provides an interface for an embed type and its metadata.
+ *
+ * @ingroup embed_api
  */
-interface EmbedTypeInterface {
+interface EmbedTypeInterface extends ConfigurablePluginInterface, PluginFormInterface, PluginInspectionInterface {
 
   /**
-   * Gets any arbitrary property.
+   * Gets a configuration value.
    *
-   * @param string $property
-   *   The property to retrieve.
+   * @param string $name
+   *   The name of the plugin configuration value.
+   * @param mixed $default
+   *   The default value to return if the configuration value does not exist.
    *
    * @return mixed
-   *   The value for that property, or NULL if the property does not exist.
+   *   The currently set configuration value, or the value of $default if the
+   *   configuration value is not set.
    */
-  public function get($property);
+  public function getConfigurationValue($name, $default = NULL);
 
   /**
-   * Sets a value to an arbitrary property.
+   * Sets a configuration value.
    *
-   * @param string $property
-   *   The property to use for the value.
+   * @param string $name
+   *   The name of the plugin configuration value.
    * @param mixed $value
    *   The value to set.
-   *
-   * @return static
    */
-  public function set($property, $value);
+  public function setConfigurationValue($name, $value);
 
   /**
-   * Returns the unique identifier of the embed type.
+   * Gets the default icon URL for the embed type.
    *
    * @return string
-   *   The unique identifier of the embed type.
+   *   The URL to the default icon. Use file_create_url() if needed.
    */
-  public function id();
-
-  /**
-   * Returns the human-readable name of the embed type.
-   *
-   * @return string
-   *   The human-readable name of the embed type.
-   */
-  public function label();
-
-  /**
-   * Returns the name of the embed form class associated with this embed type.
-   *
-   * @return string
-   *   The name of the embed form class.
-   */
-  public function getEmbedFormClass();
+  public function getDefaultIconUrl();
 
 }

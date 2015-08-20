@@ -21,15 +21,15 @@ embed.button.*:
     id:
       type: string
       label: 'Machine name'
-    embed_type:
+    type_id:
       type: string
-      label: 'Embed type'
+      label: 'Embed type plugin ID'
+    type_settings:
+      type: embed.embed_type_settings.[%parent.type_id]
     icon_uuid:
       type: string
       label: 'Button image'
-    display_plugins:
-      type: sequence
-      label: 'Allowed display plugins'
-      sequence:
-        type: string
-        label: 'Display plugin'
+
+embed.embed_type_settings.*:
+  type: mapping
+  label: 'Embed type settings'

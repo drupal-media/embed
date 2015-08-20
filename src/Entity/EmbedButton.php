@@ -7,8 +7,10 @@
 
 namespace Drupal\embed\Entity;
 
+use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\editor\EditorInterface;
 use Drupal\embed\EmbedButtonInterface;
 
 /**
@@ -32,16 +34,16 @@ use Drupal\embed\EmbedButtonInterface;
  *     "label" = "label",
  *   },
  *   links = {
- *     "edit-form" = "/admin/config/content/embed/manage/{embed_button}",
- *     "delete-form" = "/admin/config/content/embed/manage/{embed_button}/delete",
+ *     "edit-form" = "/admin/config/content/embed/button/manage/{embed_button}",
+ *     "delete-form" = "/admin/config/content/embed/button/manage/{embed_button}/delete",
  *     "collection" = "/admin/config/content/embed",
  *   },
  *   config_export = {
  *     "label",
  *     "id",
- *     "embed_type",
+ *     "type_id",
+ *     "type_settings",
  *     "icon_uuid",
- *     "display_plugins",
  *   }
  * )
  */
@@ -62,11 +64,20 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
   public $label;
 
   /**
-   * Selected embed type.
+   * The embed type plugin ID.
    *
    * @var string
    */
-  public $embed_type;
+  public $type_id;
+
+  /**
+   * Embed type settings.
+   *
+   * An array of key/value pairs.
+   *
+   * @var array
+   */
+  public $type_settings = array();
 
   /**
    * UUID of the button's icon file.
@@ -76,30 +87,30 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
   public $icon_uuid;
 
   /**
-   * Array of allowed display plugins for the entity type.
-   *
-   * An empty array signifies that all are allowed.
-   *
-   * @var array
-   */
-  public $display_plugins;
-
-  /**
    * {@inheritdoc}
    */
-  public function getEmbedType() {
-    return $this->embed_type;
+  public function getTypeId() {
+    return $this->type_id;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getEmbedTypeLabel() {
-    if ($definition = $this->embedTypeManager()->getDefinition($this->embed_type, FALSE)) {
+  public function getTypeLabel() {
+    if ($definition = $this->embedTypeManager()->getDefinition($this->getTypeId(), FALSE)) {
       return $definition['label'];
     }
     else {
       return t('Unknown');
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getTypePlugin() {
+    if ($plugin_id = $this->getTypeId()) {
+      return $this->embedTypeManager()->createInstance($plugin_id, $this->getTypeSettings());
     }
   }
 
@@ -120,22 +131,8 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
       return $image->url();
     }
     else {
-      return file_create_url(drupal_get_path('module', 'embed') . '/js/plugins/drupalembed/embed.png');
+      return $this->getTypePlugin()->getDefaultIconUrl();
     }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getAllowedDisplayPlugins() {
-    $allowed_display_plugins = array();
-    // Include only those plugin ids in result whose value is set.
-    foreach ($this->display_plugins as $key => $value) {
-      if ($value) {
-        $allowed_display_plugins[$key] = $value;
-      }
-    }
-    return $allowed_display_plugins;
   }
 
   /**
@@ -150,7 +147,7 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
     }
 
     // Add the embed type plugin as a dependency.
-    if ($definition = $this->embedTypeManager()->getDefinition($this->embed_type, FALSE)) {
+    if ($definition = $this->embedTypeManager()->getDefinition($this->getTypeId(), FALSE)) {
       $this->addDependency('module', $definition['provider']);
     }
 
@@ -164,15 +161,6 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
    */
   protected function embedTypeManager() {
     return \Drupal::service('plugin.manager.embed.type');
-  }
-
-  /**
-   * Gets the embed display plugin manager.
-   *
-   * @return \Drupal\embed\EmbedType\EmbedTypeManager
-   */
-  protected function embedDisplayManager() {
-    return \Drupal::service('plugin.manager.embed.display');
   }
 
   /**
@@ -224,6 +212,42 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
         }
       }
     }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getTypeSetting($key, $default = NULL) {
+    if (isset($this->type_settings[$key])) {
+      return $this->type_settings[$key];
+    }
+    else {
+      return $default;
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getTypeSettings() {
+    return $this->type_settings;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function isEnabledInEditor(EditorInterface $editor, $return_as_object = FALSE) {
+    // @todo Should the access result have a context of embed button and/or editors?
+    $settings = $editor->getSettings();
+    foreach ($settings['toolbar']['rows'] as $row_number => $row) {
+      foreach ($row as $group) {
+        if (in_array($this->id(), $group['items'])) {
+          return $return_as_object ? AccessResult::allowed() : TRUE;
+        }
+      }
+    }
+
+    return $return_as_object ? AccessResult::forbidden() : FALSE;
   }
 
 }

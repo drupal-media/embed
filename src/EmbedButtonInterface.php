@@ -8,6 +8,7 @@
 namespace Drupal\embed;
 
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
+use Drupal\editor\EditorInterface;
 
 /**
  * Provides an interface defining a embed button entity.
@@ -20,7 +21,7 @@ interface EmbedButtonInterface extends ConfigEntityInterface {
    * @return string
    *   Machine name of the embed type.
    */
-  public function getEmbedType();
+  public function getTypeId();
 
   /**
    * Returns the label of the embed type for which this button is enabled.
@@ -28,7 +29,36 @@ interface EmbedButtonInterface extends ConfigEntityInterface {
    * @return string
    *   Human readable label of the embed type.
    */
-  public function getEmbedTypeLabel();
+  public function getTypeLabel();
+
+  /**
+   * Returns the plugin of the embed type for which this button is enabled.
+   *
+   * @return \Drupal\embed\EmbedType\EmbedTypeInterface
+   *   The plugin of the embed type.
+   */
+  public function getTypePlugin();
+
+  /**
+   * Gets the value of a embed type setting.
+   *
+   * @param string $key
+   *   The setting name.
+   * @param mixed $default
+   *   The default value
+   *
+   * @return mixed
+   *   The value.
+   */
+  public function getTypeSetting($key, $default = NULL);
+
+  /**
+   * Gets all embed type settings.
+   *
+   * @return array
+   *   An array of key-value pairs.
+   */
+  public function getTypeSettings();
 
   /**
    * Returns the button's icon file.
@@ -47,11 +77,16 @@ interface EmbedButtonInterface extends ConfigEntityInterface {
   public function getIconUrl();
 
   /**
-   * Returns the list of display plugins allowed for the embed type.
+   * Checks if the entity embed button is enabled in an editor configuration.
    *
-   * @return array
-   *   List of allowed display plugins.
+   * @param \Drupal\editor\EditorInterface $editor
+   *   The editor object to check.
+   * @param bool $return_as_object
+   *   (optional) Defaults to FALSE.
+   *
+   * @return bool|\Drupal\Core\Access\AccessResultInterface
+   *   TRUE if this entity embed button is enabled in $editor. FALSE otherwise.
    */
-  public function getAllowedDisplayPlugins();
+  public function isEnabledInEditor(EditorInterface $editor, $return_as_object = FALSE);
 
 }

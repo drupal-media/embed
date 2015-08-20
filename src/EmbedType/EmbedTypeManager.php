@@ -31,8 +31,8 @@ class EmbedTypeManager extends DefaultPluginManager {
    *   The module handler to invoke the alter hook with.
    */
   public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler) {
-    parent::__construct('Plugin/EmbedType', $namespaces, $module_handler, 'Drupal\embed\EmbedTypeInterface', 'Drupal\embed\Annotation\EmbedType');
-    $this->alterInfo('embed_type_plugin_info');
+    parent::__construct('Plugin/EmbedType', $namespaces, $module_handler, 'Drupal\embed\EmbedType\EmbedTypeInterface', 'Drupal\embed\Annotation\EmbedType');
+    $this->alterInfo('embed_type_plugins');
     $this->setCacheBackend($cache_backend, 'embed_type_plugins');
   }
 
@@ -43,9 +43,11 @@ class EmbedTypeManager extends DefaultPluginManager {
    *   An array of valid plugin labels, keyed by plugin ID.
    */
   public function getDefinitionOptions() {
-    return array_map(function ($definition) {
+    $options = array_map(function ($definition) {
       return (string) $definition['label'];
     }, $this->getDefinitions());
+    natsort($options);
+    return $options;
   }
 
 }

@@ -23,24 +23,25 @@ entity.embed_button.collection:
     _permission: 'administer embed buttons'
 
 embed.button_add:
-  path: '/admin/config/content/embed/add'
+  path: '/admin/config/content/embed/button/add'
   defaults:
     _entity_form: 'embed_button.add'
     _title: 'Add embed button'
   requirements:
-    _permission: 'administer embed butotns'
+    _permission: 'administer embed buttons'
 
 entity.embed_button.edit_form:
-  path: '/admin/config/content/embed/manage/{embed_button}'
+  path: '/admin/config/content/embed/button/manage/{embed_button}'
   defaults:
     _entity_form: 'embed_button.edit'
+    _title: 'Edit embed button'
   requirements:
     _permission: 'administer embed buttons'
 
 entity.embed_button.delete_form:
-  path: '/admin/config/content/embed/manage/{embed_button}/delete'
+  path: '/admin/config/content/embed/button/manage/{embed_button}/delete'
   defaults:
     _entity_form: 'embed_button.delete'
-    _title: 'Delete'
+    _title: 'Delete embed button'
   requirements:
     _entity_access: 'embed_button.delete'
