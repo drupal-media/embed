@@ -7,6 +7,7 @@
 
 namespace Drupal\embed\Entity;
 
+use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\editor\EditorInterface;
@@ -235,19 +236,18 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
   /**
    * {@inheritdoc}
    */
-  public function isEnabledInEditor(EditorInterface $editor) {
-    if ($id = $this->id()) {
-      $settings = $editor->getSettings();
-      foreach ($settings['toolbar']['rows'] as $row_number => $row) {
-        foreach ($row as $group) {
-          if (in_array($id, $group['items'])) {
-            return TRUE;
-          }
+  public function isEnabledInEditor(EditorInterface $editor, $return_as_object = FALSE) {
+    // @todo Should the access result have a context of embed button and/or editors?
+    $settings = $editor->getSettings();
+    foreach ($settings['toolbar']['rows'] as $row_number => $row) {
+      foreach ($row as $group) {
+        if (in_array($this->id(), $group['items'])) {
+          return $return_as_object ? AccessResult::allowed() : TRUE;
         }
       }
     }
 
-    return FALSE;
+    return $return_as_object ? AccessResult::forbidden() : FALSE;
   }
 
 }

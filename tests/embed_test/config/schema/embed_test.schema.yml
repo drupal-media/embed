@@ -21,3 +21,7 @@ embed.embed_type_settings.embed_test_aircraft:
     aircraft_type:
       type: string
       label: 'Airplane type'
+
+embed.embed_type_settings.embed_test_default:
+  type: mapping
+  label: 'Schema for the embed_test_default embed type additions to an embed button entity'

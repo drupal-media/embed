@@ -56,6 +56,7 @@ abstract class EmbedTestBase extends WebTestBase {
     $editor_group = [
       'name' => 'Embed',
       'items' => [
+        'embed_test_default',
       ],
     ];
     $editor = Editor::create([
