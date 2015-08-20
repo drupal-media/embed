@@ -29,12 +29,6 @@ embed.button.*:
     icon_uuid:
       type: string
       label: 'Button image'
-    display_plugins:
-      type: sequence
-      label: 'Allowed display plugins'
-      sequence:
-        type: string
-        label: 'Display plugin ID'
 
 embed.embed_type_settings.*:
   type: mapping

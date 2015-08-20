@@ -42,7 +42,6 @@ use Drupal\embed\EmbedButtonInterface;
  *     "type_id",
  *     "type_settings",
  *     "icon_uuid",
- *     "display_plugins",
  *   }
  * )
  */
@@ -84,15 +83,6 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
    * @var string
    */
   public $icon_uuid;
-
-  /**
-   * Array of allowed display plugins for the entity type.
-   *
-   * An empty array signifies that all are allowed.
-   *
-   * @var array
-   */
-  public $display_plugins;
 
   /**
    * {@inheritdoc}
@@ -144,20 +134,6 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
   /**
    * {@inheritdoc}
    */
-  public function getAllowedDisplayPlugins() {
-    $allowed_display_plugins = array();
-    // Include only those plugin ids in result whose value is set.
-    foreach ($this->display_plugins as $key => $value) {
-      if ($value) {
-        $allowed_display_plugins[$key] = $value;
-      }
-    }
-    return $allowed_display_plugins;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function calculateDependencies() {
     parent::calculateDependencies();
 
@@ -181,15 +157,6 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
    */
   protected function typeManager() {
     return \Drupal::service('plugin.manager.embed.type');
-  }
-
-  /**
-   * Gets the embed display plugin manager.
-   *
-   * @return \Drupal\embed\EmbedType\EmbedTypeManager
-   */
-  protected function displayManager() {
-    return \Drupal::service('plugin.manager.embed.display');
   }
 
   /**
