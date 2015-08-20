@@ -9,6 +9,7 @@ namespace Drupal\embed\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\editor\EditorInterface;
 use Drupal\embed\EmbedButtonInterface;
 
 /**
@@ -229,6 +230,24 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
    */
   public function getTypeSettings() {
     return $this->type_settings;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function isEnabledInEditor(EditorInterface $editor) {
+    if ($id = $this->id()) {
+      $settings = $editor->getSettings();
+      foreach ($settings['toolbar']['rows'] as $row_number => $row) {
+        foreach ($row as $group) {
+          if (in_array($id, $group['items'])) {
+            return TRUE;
+          }
+        }
+      }
+    }
+
+    return FALSE;
   }
 
 }
