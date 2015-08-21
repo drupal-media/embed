@@ -178,21 +178,18 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
   public function postSave(EntityStorageInterface $storage, $update = TRUE) {
     parent::postSave($storage, $update);
 
-    $new_button_icon_uuid = $this->get('icon_uuid');
-    if (isset($this->original)) {
-      $old_button_icon_uuid = $this->original->get('icon_uuid');
-      if (!empty($old_button_icon_uuid) && $old_button_icon_uuid != $new_button_icon_uuid) {
-        if ($file = $this->entityManager()->loadEntityByUuid('file', $old_button_icon_uuid)) {
-          $this->fileUsage()->delete($file, 'embed', $this->getEntityTypeId(), $this->id());
-        }
+    $icon_file = $this->getIconFile();
+    if (isset($this->original) && $old_icon_file = $this->original->getIconFile()) {
+      /** @var \Drupal\file\FileInterface $old_icon_file */
+      if ($icon_file->uuid() != $old_icon_file->uuid()) {
+        $this->fileUsage()->delete($old_icon_file, 'embed', $this->getEntityTypeId(), $this->id());
       }
     }
-    if ($new_button_icon_uuid) {
-      if ($file = $this->entityManager()->loadEntityByUuid('file', $new_button_icon_uuid)) {
-        $usage = $this->fileUsage()->listUsage($file);
-        if (empty($usage['embed'][$this->getEntityTypeId()][$this->id()])) {
-          $this->fileUsage()->add($file, 'embed', $this->getEntityTypeId(), $this->id());
-        }
+
+    if ($icon_file) {
+      $usage = $this->fileUsage()->listUsage($icon_file);
+      if (empty($usage['embed'][$this->getEntityTypeId()][$this->id()])) {
+        $this->fileUsage()->add($icon_file, 'embed', $this->getEntityTypeId(), $this->id());
       }
     }
   }
@@ -205,11 +202,8 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
     // Remove file usage for any button icons.
     foreach ($entities as $entity) {
       /** @var \Drupal\embed\EmbedButtonInterface $entity */
-      $icon_uuid = $entity->get('icon_uuid');
-      if ($icon_uuid) {
-        if ($file = \Drupal::entityManager()->loadEntityByUuid('file', $icon_uuid)) {
-          \Drupal::service('file.usage')->delete($file, 'entity_embed', $entity->getEntityTypeId(), $entity->id());
-        }
+      if ($icon_file = $entity->getIconFile()) {
+        \Drupal::service('file.usage')->delete($icon_file, 'embed', $entity->getEntityTypeId(), $entity->id());
       }
     }
   }
