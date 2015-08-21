@@ -233,21 +233,4 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
     return $this->type_settings;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function isEnabledInEditor(EditorInterface $editor, $return_as_object = FALSE) {
-    // @todo Should the access result have a context of embed button and/or editors?
-    $settings = $editor->getSettings();
-    foreach ($settings['toolbar']['rows'] as $row_number => $row) {
-      foreach ($row as $group) {
-        if (in_array($this->id(), $group['items'])) {
-          return $return_as_object ? AccessResult::allowed() : TRUE;
-        }
-      }
-    }
-
-    return $return_as_object ? AccessResult::neutral() : FALSE;
-  }
-
 }

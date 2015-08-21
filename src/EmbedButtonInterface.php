@@ -76,17 +76,4 @@ interface EmbedButtonInterface extends ConfigEntityInterface {
    */
   public function getIconUrl();
 
-  /**
-   * Checks if the entity embed button is enabled in an editor configuration.
-   *
-   * @param \Drupal\editor\EditorInterface $editor
-   *   The editor object to check.
-   * @param bool $return_as_object
-   *   (optional) Defaults to FALSE.
-   *
-   * @return bool|\Drupal\Core\Access\AccessResultInterface
-   *   TRUE if this entity embed button is enabled in $editor. FALSE otherwise.
-   */
-  public function isEnabledInEditor(EditorInterface $editor, $return_as_object = FALSE);
-
 }
