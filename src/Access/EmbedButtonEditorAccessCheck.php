@@ -52,7 +52,7 @@ class EmbedButtonEditorAccessCheck implements AccessInterface {
   }
 
   /**
-   * Checks if the entity embed button is enabled in an editor configuration.
+   * Checks if the embed button is enabled in an editor configuration.
    *
    * @param \Drupal\embed\EmbedButtonInterface $embed_button
    *   The embed button to check.
