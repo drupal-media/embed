@@ -74,7 +74,7 @@ abstract class EmbedCKEditorPluginBase extends CKEditorPluginBase implements Con
 
   protected function getButton(EmbedButtonInterface $embed_button) {
     return [
-      'id' => $embed_button->id(),
+      'id' => $embed_button->getPrefixedId(),
       'name' => SafeMarkup::checkPlain($embed_button->label()),
       'label' => SafeMarkup::checkPlain($embed_button->label()),
       'image' => $embed_button->getIconUrl(),

@@ -176,7 +176,7 @@ class EmbedButtonForm extends EntityForm {
         return array_merge($result, array_keys($item));
       }, array());
       // Ensure that button ID is unique.
-      if (in_array($button->id(), $all_buttons)) {
+      if (in_array($button->getPrefixedId(), $all_buttons)) {
         $form_state->setErrorByName('id', $this->t('A CKEditor button with ID %id already exists.', array('%id' => $button->id())));
       }
     }

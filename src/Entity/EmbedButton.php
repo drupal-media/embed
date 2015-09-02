@@ -227,4 +227,8 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
     return $this->type_settings;
   }
 
+  public function getPrefixedId() {
+    return $this->getTypeId() . '_' . $this->id();
+  }
+
 }
