@@ -36,19 +36,14 @@ class EmbedButtonListBuilder extends ConfigEntityListBuilder {
   public function buildRow(EntityInterface $entity) {
     /** @var \Drupal\embed\EmbedButtonInterface $entity */
     $row = [];
-    $row['label'] = SafeMarkup::checkPlain($entity->label());
-    $row['embed_type'] = SafeMarkup::checkPlain($entity->getTypeLabel());
+    $row['label'] = $entity->label();
+    $row['embed_type'] = $entity->getTypeLabel();
     if ($icon_url = $entity->getIconUrl()) {
-      $row['icon'] = \Drupal::theme()->render(
-        'image',
-        [
-          'uri' => $icon_url,
-          'alt' => $this->t(
-            'Button icon for the @label button',
-            array('@label' => $entity->label())
-          )
-        ]
-      );
+      $row['icon']['data'] = [
+        '#theme' => 'image',
+        '#uri' => $icon_url,
+        '#alt' => $this->t('Button icon for the @label button', ['@label' => $entity->label()]),
+      ];
     }
     else {
       $row['icon'] = $this->t('None');
