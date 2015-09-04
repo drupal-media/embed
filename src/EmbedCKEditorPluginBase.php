@@ -7,7 +7,7 @@
 
 namespace Drupal\embed;
 
-use Drupal\Component\Utility\SafeMarkup;
+use Drupal\Component\Utility\Html;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\ckeditor\CKEditorPluginBase;
@@ -75,8 +75,8 @@ abstract class EmbedCKEditorPluginBase extends CKEditorPluginBase implements Con
   protected function getButton(EmbedButtonInterface $embed_button) {
     return [
       'id' => $embed_button->id(),
-      'name' => SafeMarkup::checkPlain($embed_button->label()),
-      'label' => SafeMarkup::checkPlain($embed_button->label()),
+      'name' => Html::escape($embed_button->label()),
+      'label' => Html::escape($embed_button->label()),
       'image' => $embed_button->getIconUrl(),
     ];
   }
