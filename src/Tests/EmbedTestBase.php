@@ -22,7 +22,7 @@ abstract class EmbedTestBase extends WebTestBase {
    *
    * @var array
    */
-  public static $modules = ['embed', 'embed_test', 'editor', 'ckeditor'];
+  public static $modules = ['block', 'embed', 'embed_test', 'editor', 'ckeditor'];
 
   /**
    * The test administrative user.
@@ -80,6 +80,11 @@ abstract class EmbedTestBase extends WebTestBase {
     $this->webUser = $this->drupalCreateUser([
       'use text format embed_test',
     ]);
+
+    // Set up some standard blocks for the testing theme (Classy).
+    // @see https://www.drupal.org/node/507488?page=1#comment-10291517
+    $this->drupalPlaceBlock('local_tasks_block');
+    $this->drupalPlaceBlock('local_actions_block');
   }
 
   /**
