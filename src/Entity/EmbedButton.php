@@ -146,10 +146,9 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
       $this->addDependency($file_icon->getConfigDependencyKey(), $file_icon->getConfigDependencyName());
     }
 
-    // Add the embed type plugin as a dependency.
-    if ($definition = $this->embedTypeManager()->getDefinition($this->getTypeId(), FALSE)) {
-      $this->addDependency('module', $definition['provider']);
-    }
+    // Gather the dependencies of the embed type plugin.
+    $plugin = $this->getTypePlugin();
+    $this->calculatePluginDependencies($plugin);
 
     return $this->dependencies;
   }
