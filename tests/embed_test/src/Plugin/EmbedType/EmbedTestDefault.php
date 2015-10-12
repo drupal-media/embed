@@ -14,7 +14,7 @@ use Drupal\embed\EmbedType\EmbedTypeBase;
  *
  * @EmbedType(
  *   id = "embed_test_default",
- *   label = @Translation("Default test")
+ *   label = @Translation("Default")
  * )
  */
 class EmbedTestDefault extends EmbedTypeBase {
