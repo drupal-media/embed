@@ -10,7 +10,7 @@ namespace Drupal\embed\Tests;
 use Drupal\editor\Entity\Editor;
 
 /**
- * Tests the entity_embed dialog controller and route.
+ * Tests EmbedButtonEditorAccessCheck
  *
  * @group embed
  */
