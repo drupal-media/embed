@@ -86,8 +86,8 @@ trait DomHelperTrait {
    * @param string $content
    *   The text or HTML that will replace the contents of $node.
    *
-   * @return \DOMNodeList
-   *   DOMNodeList of DOMNode objects that replaced a node.
+   * @return array
+   *   Array of DOMNode objects that replaced a node.
    */
   protected function replaceNodeContent(\DOMNode &$node, $content) {
     if (strlen($content)) {
@@ -100,16 +100,20 @@ trait DomHelperTrait {
       $replacement_nodes = [$node->ownerDocument->createTextNode('')];
     }
 
+    // We can't just return $replacement_nodes because it may be an array or
+    // DOMNodeList object. So collect replacement nodes into new array.
+    $replacement_nodes_array = [];
     // Import the updated DOMNode from the new DOMDocument into the original
     // one, importing also the child nodes of the replacement DOMNode.
     foreach ($replacement_nodes as $replacement_node) {
       $replacement_node = $node->ownerDocument->importNode($replacement_node, TRUE);
       $node->parentNode->insertBefore($replacement_node, $node);
+      $replacement_nodes_array[] = $replacement_node;
     }
     $node->parentNode->removeChild($node);
     $node = $replacement_node;
 
-    return $replacement_nodes;
+    return $replacement_nodes_array;
   }
 
   /**
