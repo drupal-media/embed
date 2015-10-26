@@ -72,6 +72,14 @@ class DomHelperTraitTest extends UnitTestCase {
     // Test replacing again with a non-empty value.
     $this->replaceNodeContent($this->node, '<div></div>');
     $this->assertEquals(Html::serialize($this->document), '<outer><div></div></outer>');
+    // Test replacing again with a value without root element.
+    $new_nodes = $this->replaceNodeContent($this->node, '<p>first</p><p>second</p>');
+    $this->assertEquals(Html::serialize($this->document), '<outer><p>first</p><p>second</p></outer>');
+    $this->assertEquals(count($new_nodes), 2);
+    // Test replacing again with a non-empty value.
+    $new_nodes = $this->replaceNodeContent($this->node, '<p>third</p>');
+    $this->assertEquals(Html::serialize($this->document), '<outer><p>first</p><p>third</p></outer>');
+    $this->assertEquals(count($new_nodes), 1);
   }
 
   /**
