@@ -102,12 +102,12 @@ trait DomHelperTrait {
 
     // Import the updated DOMNode from the new DOMDocument into the original
     // one, importing also the child nodes of the replacement DOMNode.
-    foreach ($replacement_nodes as &$replacement_node) {
+    foreach ($replacement_nodes as $replacement_node) {
       $replacement_node = $node->ownerDocument->importNode($replacement_node, TRUE);
       $node->parentNode->insertBefore($replacement_node, $node);
     }
     $node->parentNode->removeChild($node);
-    $node = $replacement_node;
+    $node = end($replacement_nodes);
 
     return $replacement_nodes;
   }
