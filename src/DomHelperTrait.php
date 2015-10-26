@@ -85,25 +85,35 @@ trait DomHelperTrait {
    *   A DOMNode object.
    * @param string $content
    *   The text or HTML that will replace the contents of $node.
+   *
+   * @return array
+   *   Array of DOMNode objects that replaced a node.
    */
   protected function replaceNodeContent(\DOMNode &$node, $content) {
     if (strlen($content)) {
-      // Load the contents into a new DOMDocument and retrieve the element.
-      $replacement_node = Html::load($content)->getElementsByTagName('body')
+      // Load the contents into a new DOMDocument and retrieve elements.
+      $replacement_nodes = Html::load($content)->getElementsByTagName('body')
         ->item(0)
-        ->childNodes
-        ->item(0);
+        ->childNodes;
     }
     else {
-      $replacement_node = $node->ownerDocument->createTextNode('');
+      $replacement_nodes = [$node->ownerDocument->createTextNode('')];
     }
 
+    // We can't just return $replacement_nodes because it may be an array or
+    // DOMNodeList object. So collect replacement nodes into new array.
+    $replacement_nodes_array = [];
     // Import the updated DOMNode from the new DOMDocument into the original
     // one, importing also the child nodes of the replacement DOMNode.
-    $replacement_node = $node->ownerDocument->importNode($replacement_node, TRUE);
-    $node->parentNode->appendChild($replacement_node);
+    foreach ($replacement_nodes as $replacement_node) {
+      $replacement_node = $node->ownerDocument->importNode($replacement_node, TRUE);
+      $node->parentNode->insertBefore($replacement_node, $node);
+      $replacement_nodes_array[] = $replacement_node;
+    }
     $node->parentNode->removeChild($node);
     $node = $replacement_node;
+
+    return $replacement_nodes_array;
   }
 
   /**
