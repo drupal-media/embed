@@ -86,8 +86,8 @@ trait DomHelperTrait {
    * @param string $content
    *   The text or HTML that will replace the contents of $node.
    *
-   * @return array
-   *   Array of DOMNode objects that replaced a node.
+   * @return \DOMNodeList
+   *   DOMNodeList of DOMNode objects that replaced a node.
    */
   protected function replaceNodeContent(\DOMNode &$node, $content) {
     if (strlen($content)) {
@@ -107,7 +107,7 @@ trait DomHelperTrait {
       $node->parentNode->insertBefore($replacement_node, $node);
     }
     $node->parentNode->removeChild($node);
-    $node = end($replacement_nodes);
+    $node = $replacement_node;
 
     return $replacement_nodes;
   }
