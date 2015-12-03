@@ -48,30 +48,80 @@ class DomHelperTraitTest extends UnitTestCase {
 
   /**
    * Tests DomHelperTrait::setNodeContent().
+   *
+   * @dataProvider providerTestSetNodeContent
    */
-  public function testSetNodeContent() {
-    $this->setNodeContent($this->node, '<div><replacement replaced="true" /></div>');
-    $this->assertEquals(Html::serialize($this->document), '<outer><test foo="bar" namespace:foo="bar"><div><replacement replaced="true"></replacement></div></test></outer>');
-    // Test replacing with an empty value.
-    $this->setNodeContent($this->node, '');
-    $this->assertEquals(Html::serialize($this->document), '<outer><test foo="bar" namespace:foo="bar"></test></outer>');
-    // Test replacing again with a non-empty value.
-    $this->setNodeContent($this->node, '<div></div>');
-    $this->assertEquals(Html::serialize($this->document), '<outer><test foo="bar" namespace:foo="bar"><div></div></test></outer>');
+  public function testSetNodeContent($content, $expected_output) {
+    $this->setNodeContent($this->node, $content);
+    $this->assertEquals(Html::serialize($this->document), $expected_output);
+  }
+
+  /**
+   * @return array
+   * @see ::testSetNodeContent()
+   */
+  public function providerTestSetNodeContent() {
+    return [
+      'empty' => [
+        '',
+        '<outer><test foo="bar" namespace:foo="bar"></test></outer>',
+      ],
+      'single node without children' => [
+        '<div></div>',
+        '<outer><test foo="bar" namespace:foo="bar"><div></div></test></outer>',
+      ],
+      'single node with children' => [
+        '<div><replacement replaced="true" /></div>',
+        '<outer><test foo="bar" namespace:foo="bar"><div><replacement replaced="true"></replacement></div></test></outer>',
+      ],
+      'multiple nodes' => [
+        '<p>first</p><p>second</p>',
+        '<outer><test foo="bar" namespace:foo="bar"><p>first</p><p>second</p></test></outer>',
+      ],
+      'multiple nodes, with a text node, comment node and element node' => [
+        'Second <!-- comment --> <p>third</p>',
+        '<outer><test foo="bar" namespace:foo="bar">Second <!-- comment --> <p>third</p></test></outer>',
+      ]
+    ];
   }
 
   /**
    * Test DomHelperTrait::replaceNodeContent().
+   *
+   * @dataProvider providerTestReplaceNodeContent
    */
-  public function testReplaceNodeContent() {
-    $this->replaceNodeContent($this->node, '<div><replacement replaced="true" /></div>');
-    $this->assertEquals(Html::serialize($this->document), '<outer><div><replacement replaced="true"></replacement></div></outer>');
-    // Test replacing with an empty value.
-    $this->replaceNodeContent($this->node, '');
-    $this->assertEquals(Html::serialize($this->document), '<outer></outer>');
-    // Test replacing again with a non-empty value.
-    $this->replaceNodeContent($this->node, '<div></div>');
-    $this->assertEquals(Html::serialize($this->document), '<outer><div></div></outer>');
+  public function testReplaceNodeContent($content, $expected_output) {
+    $this->replaceNodeContent($this->node, $content);
+    $this->assertEquals($expected_output, Html::serialize($this->document));
+  }
+
+  /**
+   * @return array
+   * @see ::testReplaceNodeContent()
+   */
+  public function providerTestReplaceNodeContent() {
+    return [
+      'empty' => [
+        '',
+        '<outer></outer>',
+      ],
+      'single node without children' => [
+        '<div></div>',
+        '<outer><div></div></outer>',
+      ],
+      'single node with children' => [
+        '<div><replacement replaced="true" /></div>',
+        '<outer><div><replacement replaced="true"></replacement></div></outer>',
+      ],
+      'multiple nodes' => [
+        '<p>first</p><p>second</p>',
+        '<outer><p>first</p><p>second</p></outer>',
+      ],
+      'multiple nodes, with a text node, comment node and element node' => [
+        'Second <!-- comment --> <p>third</p>',
+        '<outer>Second <!-- comment --> <p>third</p></outer>',
+      ]
+    ];
   }
 
   /**

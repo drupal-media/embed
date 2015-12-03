@@ -88,22 +88,22 @@ trait DomHelperTrait {
    */
   protected function replaceNodeContent(\DOMNode &$node, $content) {
     if (strlen($content)) {
-      // Load the contents into a new DOMDocument and retrieve the element.
-      $replacement_node = Html::load($content)->getElementsByTagName('body')
+      // Load the content into a new DOMDocument and retrieve the DOM nodes.
+      $replacement_nodes = Html::load($content)->getElementsByTagName('body')
         ->item(0)
-        ->childNodes
-        ->item(0);
+        ->childNodes;
     }
     else {
-      $replacement_node = $node->ownerDocument->createTextNode('');
+      $replacement_nodes = [$node->ownerDocument->createTextNode('')];
     }
 
-    // Import the updated DOMNode from the new DOMDocument into the original
-    // one, importing also the child nodes of the replacement DOMNode.
-    $replacement_node = $node->ownerDocument->importNode($replacement_node, TRUE);
-    $node->parentNode->appendChild($replacement_node);
+    foreach ($replacement_nodes as $replacement_node) {
+      // Import the replacement node from the new DOMDocument into the original
+      // one, importing also the child nodes of the replacement node.
+      $replacement_node = $node->ownerDocument->importNode($replacement_node, TRUE);
+      $node->parentNode->insertBefore($replacement_node, $node);
+    }
     $node->parentNode->removeChild($node);
-    $node = $replacement_node;
   }
 
   /**
