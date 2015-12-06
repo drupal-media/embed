@@ -8,6 +8,7 @@ use Drupal\Core\Routing\Access\AccessInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\editor\EditorInterface;
 use Drupal\embed\EmbedButtonInterface;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Route;
 
 class EmbedButtonEditorAccessCheck implements AccessInterface {
@@ -36,46 +37,64 @@ class EmbedButtonEditorAccessCheck implements AccessInterface {
    */
   public function access(Route $route, RouteMatchInterface $route_match, AccountInterface $account) {
     $parameters = $route_match->getParameters();
-    if ($parameters->has('editor') && $parameters->has('embed_button')) {
+
+    $access_result = AccessResult::allowedIf($parameters->has('editor') && $parameters->has('embed_button'))
+      // Vary by 'route' because the access result depends on the 'editor' and
+      // 'embed_button' route parameters.
+      ->addCacheContexts(['route']);
+
+    if ($access_result->isAllowed()) {
       $editor = $parameters->get('editor');
       $embed_button = $parameters->get('embed_button');
       if ($editor instanceof EditorInterface && $embed_button instanceof EmbedButtonInterface) {
-        $access = $editor->getFilterFormat()->access('use', $account, TRUE);
-        $access = $access->andIf($this->checkButtonEditorAccess($embed_button, $editor, TRUE));
-        return $access;
+        return $access_result
+          // Besides having the 'editor' route parameter, it's also necessary to
+          // be allowed to use the text format associated with the text editor.
+          ->andIf($editor->getFilterFormat()->access('use', $account, TRUE))
+          // And on top of that, the 'embed_button' needs to be present in the
+          // text editor's configured toolbar.
+          ->andIf($this->checkButtonEditorAccess($embed_button, $editor));
       }
     }
 
     // No opinion, so other access checks should decide if access should be
     // allowed or not.
-    return AccessResult::neutral();
+    return $access_result;
   }
 
   /**
    * Checks if the embed button is enabled in an editor configuration.
    *
    * @param \Drupal\embed\EmbedButtonInterface $embed_button
-   *   The embed button to check.
+   *   The embed button entity to check.
    * @param \Drupal\editor\EditorInterface $editor
-   *   The editor object to check.
-   * @param bool $return_as_object
-   *   (optional) Defaults to FALSE.
+   *   The editor entity to check.
    *
-   * @return bool|\Drupal\Core\Access\AccessResultInterface
-   *   TRUE if this entity embed button is enabled in $editor. FALSE otherwise.
+   * @return \Drupal\Core\Access\AccessResultInterface
+   *
+   * @throws \Symfony\Component\HttpKernel\Exception\HttpException
+   *   When the received Text Editor entity does not use CKEditor. This is
+   *   currently only capable of detecting buttons used by CKEditor.
    */
-  public function checkButtonEditorAccess(EmbedButtonInterface $embed_button, EditorInterface $editor, $return_as_object = FALSE) {
-    // @todo Should the access result have a context of embed button and/or editors?
+  protected function checkButtonEditorAccess(EmbedButtonInterface $embed_button, EditorInterface $editor) {
+    if ($editor->getEditor() !== 'ckeditor') {
+      throw new HttpException(500, 'Currently, only CKEditor is supported.');
+    }
+
+    $has_button = FALSE;
     $settings = $editor->getSettings();
-    foreach ($settings['toolbar']['rows'] as $row_number => $row) {
+    foreach ($settings['toolbar']['rows'] as $row) {
       foreach ($row as $group) {
         if (in_array($embed_button->id(), $group['items'])) {
-          return $return_as_object ? AccessResult::allowed() : TRUE;
+          $has_button = TRUE;
+          break 2;
         }
       }
     }
 
-    return $return_as_object ? AccessResult::neutral() : FALSE;
+    return AccessResult::allowedIf($has_button)
+      ->addCacheableDependency($embed_button)
+      ->addCacheableDependency($editor);
   }
 
 }
