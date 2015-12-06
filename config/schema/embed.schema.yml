@@ -6,10 +6,10 @@ embed.settings:
   mapping:
     file_scheme:
       type: string
-      label: 'File scheme for button images'
+      label: 'File scheme for button icons'
     upload_directory:
       type: string
-      label: 'Upload directory for button images'
+      label: 'Upload directory for button icons'
 
 embed.button.*:
   type: config_entity
@@ -28,7 +28,7 @@ embed.button.*:
       type: embed.embed_type_settings.[%parent.type_id]
     icon_uuid:
       type: string
-      label: 'Button image'
+      label: 'Button icon UUID'
 
 embed.embed_type_settings.*:
   type: mapping
