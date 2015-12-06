@@ -1,5 +1,5 @@
 name: Embed
 type: module
-description: 'Provide a framework for various different types of embeds in WYSIWYG editors, common functionality, interfaces, and standards.'
+description: 'Provides a framework for different types of embeds in text editors.'
 core: 8.x
 configure: entity.embed_button.collection
