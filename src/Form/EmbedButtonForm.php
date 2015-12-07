@@ -12,7 +12,7 @@ use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityForm;
-use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\ckeditor\CKEditorPluginManager;
@@ -25,11 +25,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class EmbedButtonForm extends EntityForm {
 
   /**
-   * The entity manager service.
+   * The entity type manager service.
    *
-   * @var \Drupal\Core\Entity\EntityManagerInterface
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected $entityManager;
+  protected $entityTypeManager;
 
   /**
    * The embed type plugin manager.
@@ -48,8 +48,8 @@ class EmbedButtonForm extends EntityForm {
   /**
    * Constructs a new EmbedButtonForm.
    *
-   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
-   *   The entity manager service.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager service.
    * @param \Drupal\embed\EmbedType\EmbedTypeManager $embed_type_manager
    *   The embed type plugin manager.
    * @param \Drupal\ckeditor\CKEditorPluginManager $ckeditor_plugin_manager
@@ -57,8 +57,8 @@ class EmbedButtonForm extends EntityForm {
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The config factory.
    */
-  public function __construct(EntityManagerInterface $entity_manager, EmbedTypeManager $embed_type_manager, CKEditorPluginManager $ckeditor_plugin_manager, ConfigFactoryInterface $config_factory) {
-    $this->entityManager = $entity_manager;
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, EmbedTypeManager $embed_type_manager, CKEditorPluginManager $ckeditor_plugin_manager, ConfigFactoryInterface $config_factory) {
+    $this->entityTypeManager = $entity_type_manager;
     $this->embedTypeManager = $embed_type_manager;
     $this->ckeditorPluginManager = $ckeditor_plugin_manager;
     $this->configFactory = $config_factory;
@@ -69,7 +69,7 @@ class EmbedButtonForm extends EntityForm {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('entity.manager'),
+      $container->get('entity_type.manager'),
       $container->get('plugin.manager.embed.type'),
       $container->get('plugin.manager.ckeditor.plugin'),
       $container->get('config.factory')
@@ -213,7 +213,7 @@ class EmbedButtonForm extends EntityForm {
     $icon_fid = $form_state->getValue(array('icon_file', '0'));
     // If a file was uploaded to be used as the icon, get its UUID to be stored
     // in the config entity.
-    if (!empty($icon_fid) && $file = $this->entityManager->getStorage('file')->load($icon_fid)) {
+    if (!empty($icon_fid) && $file = $this->entityTypeManager->getStorage('file')->load($icon_fid)) {
       $button->set('icon_uuid', $file->uuid());
     }
     else {
