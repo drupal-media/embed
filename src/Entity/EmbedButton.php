@@ -131,7 +131,7 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
    */
   public function getIconUrl() {
     if ($image = $this->getIconFile()) {
-      return $image->url();
+      return file_create_url($image->getFileUri());
     }
     else {
       return $this->getTypePlugin()->getDefaultIconUrl();
