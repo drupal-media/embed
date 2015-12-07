@@ -16,7 +16,7 @@ use Drupal\editor\EditorInterface;
 interface EmbedButtonInterface extends ConfigEntityInterface {
 
   /**
-   * Returns the embed type for which this button is enabled.
+   * Returns the associated embed type.
    *
    * @return string
    *   Machine name of the embed type.
@@ -24,7 +24,7 @@ interface EmbedButtonInterface extends ConfigEntityInterface {
   public function getTypeId();
 
   /**
-   * Returns the label of the embed type for which this button is enabled.
+   * Returns the label of the associated embed type.
    *
    * @return string
    *   Human readable label of the embed type.
@@ -32,7 +32,7 @@ interface EmbedButtonInterface extends ConfigEntityInterface {
   public function getTypeLabel();
 
   /**
-   * Returns the plugin of the embed type for which this button is enabled.
+   * Returns the plugin of the associated embed type.
    *
    * @return \Drupal\embed\EmbedType\EmbedTypeInterface
    *   The plugin of the embed type.
@@ -40,12 +40,12 @@ interface EmbedButtonInterface extends ConfigEntityInterface {
   public function getTypePlugin();
 
   /**
-   * Gets the value of a embed type setting.
+   * Gets the value of an embed type setting.
    *
    * @param string $key
    *   The setting name.
    * @param mixed $default
-   *   The default value
+   *   The default value.
    *
    * @return mixed
    *   The value.
@@ -70,6 +70,9 @@ interface EmbedButtonInterface extends ConfigEntityInterface {
 
   /**
    * Returns the URL of the button's icon.
+   *
+   * If no icon file is associated with this Embed Button entity, the embed type
+   * plugin's default icon is used.
    *
    * @return string
    *   The URL of the button icon.

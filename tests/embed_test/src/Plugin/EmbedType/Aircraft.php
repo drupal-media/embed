@@ -24,28 +24,28 @@ class Aircraft extends EmbedTypeBase {
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return array(
+    return [
       'aircraft_type' => 'fixed-wing',
-    );
+    ];
   }
 
   /**
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
-    $form['aircraft_type'] = array(
+    $form['aircraft_type'] = [
       '#type' => 'select',
       '#title' => $this->t('Aircraft type'),
-      '#options' => array(
+      '#options' => [
         'aerostats' => $this->t('Lighter than air (aerostats)'),
         'fixed-wing' => $this->t('Fixed-wing'),
         'rotorcraft' => $this->t('Rotorcraft'),
         'helicopters' => $this->t('Helicopers'),
         'invalid' => $this->t('Invalid type'),
-      ),
+      ],
       '#default_value' => $this->getConfigurationValue('aircraft_type'),
       '#required' => TRUE,
-    );
+    ];
 
     return $form;
   }
@@ -69,6 +69,13 @@ class Aircraft extends EmbedTypeBase {
     }
 
     parent::submitConfigurationForm($form, $form_state);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getDefaultIconUrl() {
+    return '';
   }
 
 }

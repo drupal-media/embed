@@ -41,13 +41,13 @@ class EmbedInsertCommand implements CommandInterface, CommandWithAttachedAssetsI
   }
 
   /**
-   * Implements Drupal\Core\Ajax\CommandInterface:render().
+   * {@inheritdoc}
    */
   public function render() {
-    return array(
+    return [
       'command' => 'embed_insert',
       'data' => $this->getRenderedContent(),
-    );
+    ];
   }
 
 }

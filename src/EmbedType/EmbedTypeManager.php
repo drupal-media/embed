@@ -16,6 +16,7 @@ use Drupal\Core\Plugin\DefaultPluginManager;
  *
  * @see \Drupal\embed\Annotation\EmbedType
  * @see \Drupal\embed\EmbedType\EmbedTypeInterface
+ * @see hook_embed_type_plugins_alter()
  */
 class EmbedTypeManager extends DefaultPluginManager {
 

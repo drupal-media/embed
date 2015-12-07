@@ -46,7 +46,10 @@ interface EmbedTypeInterface extends ConfigurablePluginInterface, PluginFormInte
    * Gets the default icon URL for the embed type.
    *
    * @return string
-   *   The URL to the default icon. Use file_create_url() if needed.
+   *   The URL to the default icon. Must have been passed through
+   *   file_create_url() if the file is local.
+   *
+   * @see file_create_url()
    */
   public function getDefaultIconUrl();
 

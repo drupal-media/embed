@@ -4,6 +4,7 @@
  * @file
  * Contains \Drupal\embed\Form\EmbedSettingsForm.
  */
+
 namespace Drupal\embed\Form;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
@@ -14,7 +15,7 @@ use Drupal\Core\StreamWrapper\StreamWrapperInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManagerInterface;
 
 /**
- * Configure update settings for this site.
+ * Configure embed settings for this site.
  */
 class EmbedSettingsForm extends ConfigFormBase {
 
@@ -68,22 +69,22 @@ class EmbedSettingsForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('embed.settings');
 
-    $scheme_options = \Drupal::service('stream_wrapper_manager')->getNames(StreamWrapperInterface::WRITE_VISIBLE);
-    $form['file_scheme'] = array(
+    $scheme_options = $this->streamWrapperManager->getNames(StreamWrapperInterface::WRITE_VISIBLE);
+    $form['file_scheme'] = [
       '#type' => 'radios',
-      '#title' => t('Upload destination'),
+      '#title' => $this->t('Upload destination'),
       '#options' => $scheme_options,
       '#default_value' => $config->get('file_scheme'),
-      '#description' => t('Select where the uploaded button icon files should be stored.'),
-    );
+      '#description' => $this->t('Select where the uploaded button icon files should be stored.'),
+    ];
 
-    $form['upload_directory'] = array(
+    $form['upload_directory'] = [
       '#type' => 'textfield',
-      '#title' => t('File directory'),
+      '#title' => $this->t('File directory'),
       '#default_value' => $config->get('upload_directory'),
-      '#description' => t('Optional subdirectory within the upload destination where files will be stored. Do not include preceding or trailing slashes.'),
-      '#element_validate' => array(array(get_class($this), 'validateDirectory')),
-    );
+      '#description' => $this->t('Optional subdirectory within the upload destination where files will be stored. Do not include preceding or trailing slashes.'),
+      '#element_validate' => [[get_class($this), 'validateDirectory']],
+    ];
 
     return parent::buildForm($form, $form_state);
   }

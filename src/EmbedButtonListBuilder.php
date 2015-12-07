@@ -7,12 +7,11 @@
 
 namespace Drupal\embed;
 
-use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
 use Drupal\Core\Entity\EntityInterface;
 
 /**
- * Provides a listing of EmbedButton.
+ * Provides a listing of all Embed Button entities.
  */
 class EmbedButtonListBuilder extends ConfigEntityListBuilder {
 
@@ -25,7 +24,7 @@ class EmbedButtonListBuilder extends ConfigEntityListBuilder {
     $header['embed_type'] = $this->t('Embed type');
     $header['icon'] = [
       'data' => $this->t('Icon'),
-      'class' => array(RESPONSIVE_PRIORITY_LOW),
+      'class' => [RESPONSIVE_PRIORITY_LOW],
     ];
     return $header + parent::buildHeader();
   }
@@ -42,7 +41,7 @@ class EmbedButtonListBuilder extends ConfigEntityListBuilder {
       $row['icon']['data'] = [
         '#theme' => 'image',
         '#uri' => $icon_url,
-        '#alt' => $this->t('Button icon for the @label button', ['@label' => $entity->label()]),
+        '#alt' => $this->t('Icon for the @label button.', ['@label' => $entity->label()]),
       ];
     }
     else {

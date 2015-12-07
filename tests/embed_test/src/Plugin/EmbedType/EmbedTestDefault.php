@@ -19,4 +19,11 @@ use Drupal\embed\EmbedType\EmbedTypeBase;
  */
 class EmbedTestDefault extends EmbedTypeBase {
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getDefaultIconUrl() {
+    return '';
+  }
+
 }

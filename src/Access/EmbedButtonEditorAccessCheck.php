@@ -9,12 +9,11 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\editor\EditorInterface;
 use Drupal\embed\EmbedButtonInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\Routing\Route;
 
 class EmbedButtonEditorAccessCheck implements AccessInterface {
 
   /**
-   * Checks whether or not the embed button is enabled for given editor.
+   * Checks whether the embed button is enabled for the given text editor.
    *
    * Returns allowed if the editor toolbar contains the embed button or neutral
    * otherwise.
@@ -25,17 +24,15 @@ class EmbedButtonEditorAccessCheck implements AccessInterface {
    *   _embed_button_filter_access: 'TRUE'
    * @endcode
    *
-   * @param \Symfony\Component\Routing\Route $route
-   *   The route to check against.
    * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
-   *   The parametrized route
+   *   The current route match.
    * @param \Drupal\Core\Session\AccountInterface $account
    *   The currently logged in account.
    *
    * @return \Drupal\Core\Access\AccessResultInterface
    *   The access result.
    */
-  public function access(Route $route, RouteMatchInterface $route_match, AccountInterface $account) {
+  public function access(RouteMatchInterface $route_match, AccountInterface $account) {
     $parameters = $route_match->getParameters();
 
     $access_result = AccessResult::allowedIf($parameters->has('editor') && $parameters->has('embed_button'))

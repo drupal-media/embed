@@ -16,6 +16,8 @@
  * @param array &$plugins
  *   An associative array containing the embed type plugin definitions keyed by
  *   plugin ID.
+ *
+ * @see \Drupal\embed\EmbedType\EmbedTypeManager
  */
 function hook_embed_type_plugins_alter(array &$plugins) {
   if (isset($plugins['entity'])) {

@@ -10,6 +10,7 @@ namespace Drupal\embed\Entity;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\editor\EditorInterface;
 use Drupal\embed\EmbedButtonInterface;
 
@@ -49,6 +50,8 @@ use Drupal\embed\EmbedButtonInterface;
  */
 class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
 
+  use StringTranslationTrait;
+
   /**
    * The EmbedButton ID.
    *
@@ -77,7 +80,7 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
    *
    * @var array
    */
-  public $type_settings = array();
+  public $type_settings = [];
 
   /**
    * UUID of the button's icon file.
@@ -101,7 +104,7 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
       return $definition['label'];
     }
     else {
-      return t('Unknown');
+      return $this->t('Unknown');
     }
   }
 
@@ -192,6 +195,7 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
       }
     }
   }
+
   /**
    * {@inheritdoc}
    */

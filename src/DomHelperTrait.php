@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains Drupal\embed\DomHelperTrait.
+ * Contains \Drupal\embed\DomHelperTrait.
  */
 
 namespace Drupal\embed;
@@ -118,7 +118,7 @@ trait DomHelperTrait {
    *   The attributes as an associative array, keyed by the attribute names.
    */
   public function getNodeAttributesAsArray(\DOMNode $node) {
-    $return = array();
+    $return = [];
 
     // Convert the data attributes to the context array.
     foreach ($node->attributes as $attribute) {

@@ -30,14 +30,14 @@ abstract class EmbedTypeBase extends PluginBase implements EmbedTypeInterface {
    * {@inheritdoc}
    */
   public function calculateDependencies() {
-    return array();
+    return [];
   }
 
   /**
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return array();
+    return [];
   }
 
   /**
@@ -100,13 +100,6 @@ abstract class EmbedTypeBase extends PluginBase implements EmbedTypeInterface {
         )
       );
     }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getDefaultIconUrl() {
-    // Return nothing.
   }
 
 }
