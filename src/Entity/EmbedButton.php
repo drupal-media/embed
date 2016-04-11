@@ -183,7 +183,7 @@ class EmbedButton extends ConfigEntityBase implements EmbedButtonInterface {
     $icon_file = $this->getIconFile();
     if (isset($this->original) && $old_icon_file = $this->original->getIconFile()) {
       /** @var \Drupal\file\FileInterface $old_icon_file */
-      if ($icon_file->uuid() != $old_icon_file->uuid()) {
+      if (!$icon_file || $icon_file->uuid() != $old_icon_file->uuid()) {
         $this->fileUsage()->delete($old_icon_file, 'embed', $this->getEntityTypeId(), $this->id());
       }
     }
