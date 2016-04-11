@@ -3,3 +3,5 @@ type: module
 description: 'Provides a framework for different types of embeds in text editors.'
 core: 8.x
 configure: entity.embed_button.collection
+dependencies:
+  - ckeditor
