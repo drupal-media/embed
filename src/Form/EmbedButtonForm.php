@@ -15,7 +15,6 @@ use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\ckeditor\CKEditorPluginManager;
 use Drupal\embed\EmbedType\EmbedTypeManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -39,28 +38,18 @@ class EmbedButtonForm extends EntityForm {
   protected $embedTypeManager;
 
   /**
-   * The CKEditor plugin manager.
-   *
-   * @var \Drupal\ckeditor\CKEditorPluginManager
-   */
-  protected $ckeditorPluginManager;
-
-  /**
    * Constructs a new EmbedButtonForm.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager service.
    * @param \Drupal\embed\EmbedType\EmbedTypeManager $embed_type_manager
    *   The embed type plugin manager.
-   * @param \Drupal\ckeditor\CKEditorPluginManager $ckeditor_plugin_manager
-   *   The CKEditor plugin manager.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The config factory.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, EmbedTypeManager $embed_type_manager, CKEditorPluginManager $ckeditor_plugin_manager, ConfigFactoryInterface $config_factory) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, EmbedTypeManager $embed_type_manager, ConfigFactoryInterface $config_factory) {
     $this->entityTypeManager = $entity_type_manager;
     $this->embedTypeManager = $embed_type_manager;
-    $this->ckeditorPluginManager = $ckeditor_plugin_manager;
     $this->configFactory = $config_factory;
   }
 
@@ -71,7 +60,6 @@ class EmbedButtonForm extends EntityForm {
     return new static(
       $container->get('entity_type.manager'),
       $container->get('plugin.manager.embed.type'),
-      $container->get('plugin.manager.ckeditor.plugin'),
       $container->get('config.factory')
     );
   }
@@ -168,17 +156,6 @@ class EmbedButtonForm extends EntityForm {
 
     /** @var \Drupal\embed\EmbedButtonInterface $button */
     $button = $this->entity;
-
-    if ($button->isNew()) {
-      // Get a list of all buttons that are provided by all plugins.
-      $all_buttons = array_reduce($this->ckeditorPluginManager->getButtons(), function($result, $item) {
-        return array_merge($result, array_keys($item));
-      }, []);
-      // Ensure that button ID is unique.
-      if (in_array($button->id(), $all_buttons)) {
-        $form_state->setErrorByName('id', $this->t('A CKEditor button with ID %id already exists.', ['%id' => $button->id()]));
-      }
-    }
 
     // Run embed type plugin validation.
     if ($plugin = $button->getTypePlugin()) {
