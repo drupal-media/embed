@@ -81,4 +81,18 @@ class EmbedButtonAdminTest extends EmbedTestBase {
     $this->assertFieldByName('type_settings[aircraft_type]', 'rotorcraft');
   }
 
+  public function testCKEditorButtonConflict() {
+    $this->drupalLogin($this->adminUser);
+    $this->drupalGet('admin/config/content/embed/button/add');
+
+    $button_id = strtolower($this->randomMachineName());
+    $button_label = $this->randomMachineName();
+    $edit = array(
+      'id' => 'DrupalImage',
+      'label' => $button_label,
+      'type_id' => 'embed_test_default',
+    );
+    $this->drupalPostForm(NULL, $edit, 'Save');
+  }
+
 }
