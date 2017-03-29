@@ -85,7 +85,6 @@ class EmbedButtonAdminTest extends EmbedTestBase {
     $this->drupalLogin($this->adminUser);
     $this->drupalGet('admin/config/content/embed/button/add');
 
-    $button_id = strtolower($this->randomMachineName());
     $button_label = $this->randomMachineName();
     $edit = array(
       'id' => 'DrupalImage',
